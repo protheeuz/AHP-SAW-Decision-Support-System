@@ -10,6 +10,8 @@ use app\models\User;
 
 class AdminController extends Controller
 {
+    public $layout = 'main_admin'; // Menggunakan layout baru
+
     public function actionIndex()
     {
         $num = Kriteria::find()->count();

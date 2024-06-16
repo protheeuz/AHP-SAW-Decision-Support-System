@@ -4,6 +4,7 @@ use yii\grid\GridView;
 use yii\bootstrap4\Modal;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
+use app\models\SubKriteria;
 
 $this->title = 'Data Sub Kriteria';
 $this->params['breadcrumbs'][] = $this->title;

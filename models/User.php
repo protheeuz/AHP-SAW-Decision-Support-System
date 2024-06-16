@@ -3,12 +3,53 @@
 namespace app\models;
 
 use yii\db\ActiveRecord;
+use yii\web\IdentityInterface;
+use Yii;
 
-class User extends ActiveRecord
+class User extends ActiveRecord implements IdentityInterface
 {
     public static function tableName()
     {
         return 'user';
+    }
+
+    public static function findByUsername($username)
+    {
+        return static::findOne(['username' => $username]);
+    }
+
+    public function validatePassword($password)
+    {
+        // Assuming passwords are stored hashed
+        return Yii::$app->security->validatePassword($password, $this->password);
+    }
+
+    public static function findIdentity($id)
+    {
+        return static::findOne($id);
+    }
+
+    public static function findIdentityByAccessToken($token, $type = null)
+    {
+        // Implement sesuai kebutuhan aplikasi Anda
+        return null;
+    }
+
+    public function getId()
+    {
+        return $this->getPrimaryKey();
+    }
+
+    public function getAuthKey()
+    {
+        // Implement sesuai kebutuhan aplikasi Anda
+        return null;
+    }
+
+    public function validateAuthKey($authKey)
+    {
+        // Implement sesuai kebutuhan aplikasi Anda
+        return false;
     }
 
     public static function getUsers()

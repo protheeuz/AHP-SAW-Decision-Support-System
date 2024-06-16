@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use Yii;
 use yii\db\ActiveRecord;
 
 class Perhitungan extends ActiveRecord
@@ -33,6 +34,7 @@ class Perhitungan extends ActiveRecord
             ->where(['penilaian.id_alternatif' => $id_alternatif, 'penilaian.id_kriteria' => $id_kriteria])
             ->one();
     }
+
     public static function getMaxMin($id_kriteria)
     {
         $query = (new \yii\db\Query())
@@ -78,9 +80,8 @@ class Perhitungan extends ActiveRecord
 
     public static function insertNilaiHasil($hasil_akhir = [])
     {
-        $model = new Hasil();
-        $model->attributes = $hasil_akhir;
-        return $model->save();
+        $command = Yii::$app->db->createCommand();
+        return $command->insert('hasil', $hasil_akhir)->execute();
     }
 
     public static function hapusHasil()
