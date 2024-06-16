@@ -8,6 +8,8 @@ use yii\data\ActiveDataProvider;
 
 class ProfileController extends Controller
 {
+    public $layout = 'main_admin'; // Menambahkan layout
+    
     public function actionIndex()
     {
         $id_user = Yii::$app->user->id;

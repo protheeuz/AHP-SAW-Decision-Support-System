@@ -11,6 +11,8 @@ use yii\data\ActiveDataProvider;
 
 class PenilaianController extends Controller
 {
+    public $layout = 'main_admin'; // Menambahkan layout
+    
     public function actionIndex()
     {
         $alternatif = Alternatif::find()->all();

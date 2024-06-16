@@ -10,6 +10,8 @@ use yii\data\ActiveDataProvider;
 
 class SubKriteriaController extends Controller
 {
+    public $layout = 'main_admin'; // Menambahkan layout
+    
     public function actionIndex()
     {
         $kriteria = Kriteria::find()->all();

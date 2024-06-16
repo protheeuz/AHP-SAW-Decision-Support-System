@@ -8,6 +8,8 @@ use yii\data\ActiveDataProvider;
 
 class AlternatifController extends Controller
 {
+    public $layout = 'main_admin'; // Menambahkan layout
+    
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([

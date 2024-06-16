@@ -9,6 +9,8 @@ use yii\data\ActiveDataProvider;
 
 class KriteriaController extends Controller
 {
+    public $layout = 'main_admin'; // Menambahkan layout
+    
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([

@@ -9,6 +9,8 @@ use yii\data\ActiveDataProvider;
 
 class PerhitunganController extends Controller
 {
+    public $layout = 'main_admin'; // Menambahkan layout
+    
     public function actionHasil()
     {
         $hasil = Perhitungan::find()->all();

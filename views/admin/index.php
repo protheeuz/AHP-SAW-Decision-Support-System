@@ -6,7 +6,12 @@ $this->title = 'Dashboard';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
+<?php if (Yii::$app->user->identity->id_user_level == 1): ?>
+
 <div class="site-index">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800"><i class="fas fa-fw fa-home"></i> Dashboard</h1>
+    </div>
     <div class="alert alert-success">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
         Selamat datang <span class="text-uppercase"><b><?= Html::encode(Yii::$app->user->identity->username); ?>!</b></span> Anda bisa mengoperasikan sistem dengan wewenang tertentu melalui pilihan menu di bawah.
@@ -77,3 +82,19 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>      
     </div>
 </div>
+
+<?php elseif (Yii::$app->user->identity->id_user_level == 2): ?>
+
+<div class="site-index">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800"><i class="fas fa-fw fa-home"></i> Dashboard</h1>
+    </div>
+    <div class="alert alert-success">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        Selamat datang <span class="text-uppercase"><b><?= Html::encode(Yii::$app->user->identity->username); ?>!</b></span> Anda bisa mengoperasikan sistem dengan wewenang tertentu.
+    </div>
+    <div class="row">
+    </div>
+</div>
+
+<?php endif; ?>

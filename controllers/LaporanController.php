@@ -10,12 +10,10 @@ use Mpdf\Output\Destination;
 
 class LaporanController extends Controller
 {
+    public $layout = 'main_admin'; // Menambahkan layout
+    
     public function actionCetakLaporanHasil()
     {
-        // Debugging
-        var_dump(class_exists('Mpdf\Mpdf')); 
-        var_dump(class_exists('Mpdf\Output\Destination')); 
-
         $hasil = Perhitungan::find()->all();
         $mpdf = new Mpdf();
 
