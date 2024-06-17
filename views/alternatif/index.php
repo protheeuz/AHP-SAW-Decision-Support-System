@@ -2,14 +2,14 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 
-$this->title = 'Data Alternatif';
+$this->title = 'Data Karyawan';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="alternatif-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-    
+
     <?= Yii::$app->session->getFlash('success'); ?>
 
     <p>

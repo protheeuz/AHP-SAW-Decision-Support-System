@@ -26,11 +26,20 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php endif; ?>
 
     <?php foreach ($kriteria as $key): ?>
+    <?php
+        $sub_kriteria1 = $key->subKriterias;
+        $total_sub_kriteria = array_sum(array_map(function($sub) { return $sub->nilai; }, $sub_kriteria1));
+        $remaining_weight = $key->bobot - $total_sub_kriteria;
+    ?>
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <div class="d-sm-flex align-items-center justify-content-between">
                 <h6 class="m-0 font-weight-bold text-primary"><i class="fa fa-table"></i> <?= $key->keterangan." (".$key->kode_kriteria.")" ?></h6>
-                <?= Html::button('<i class="fa fa-plus"></i> Tambah Data', ['value' => Url::to(['sub-kriteria/create', 'id' => $key->id_kriteria]), 'class' => 'btn btn-success', 'id' => 'modalButton' . $key->id_kriteria]) ?>
+                <?php if ($remaining_weight > 0): ?>
+                    <?= Html::button('<i class="fa fa-plus"></i> Tambah Data', ['value' => Url::to(['sub-kriteria/create', 'id' => $key->id_kriteria]), 'class' => 'btn btn-success', 'id' => 'modalButton' . $key->id_kriteria]) ?>
+                <?php else: ?>
+                    <?= Html::button('<i class="fa fa-plus"></i> Tambah Data', ['class' => 'btn btn-success', 'data-toggle' => 'modal', 'data-target' => '#warningModal' . $key->id_kriteria]) ?>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -47,8 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     </thead>
                     <tbody>
                         <?php
-                        $sub_kriteria1 = SubKriteria::find()->where(['id_kriteria' => $key->id_kriteria])->all();
-                        $no=1;
+                        $no = 1;
                         foreach ($sub_kriteria1 as $sub): ?>
                         <tr align="center">
                             <td><?= $no ?></td>
@@ -56,7 +64,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <td><?= $sub->nilai ?></td>
                             <td>
                                 <div class="btn-group" role="group">
-                                    <?= Html::a('<i class="fa fa-edit"></i>', ['update', 'id' => $sub->id_sub_kriteria], ['class' => 'btn btn-warning btn-sm', 'data-toggle' => 'modal', 'data-target' => '#modal' . $sub->id_sub_kriteria]) ?>
+                                    <?= Html::button('<i class="fa fa-edit"></i> Edit', ['value' => Url::to(['sub-kriteria/update', 'id' => $sub->id_sub_kriteria]), 'class' => 'btn btn-warning btn-sm', 'id' => 'editButton' . $sub->id_sub_kriteria]) ?>
                                     <?= Html::a('<i class="fa fa-trash"></i>', ['delete', 'id' => $sub->id_sub_kriteria], [
                                         'class' => 'btn btn-danger btn-sm',
                                         'data' => [
@@ -73,11 +81,24 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
     </div>
+
+    <?php
+        Modal::begin([
+            'id' => 'warningModal' . $key->id_kriteria,
+            'title' => '<h4>Warning</h4>',
+            'size' => 'modal-md',
+        ]);
+
+        echo "<div class='alert alert-danger'>Total nilai sub-kriteria tidak bisa melebihi nilai total bobot kriteria.</div>";
+
+        Modal::end();
+    ?>
+
     <?php endforeach; ?>
 </div>
 
 <?php
-// Register modal scripts
+// Register modal scripts for adding sub-criteria
 foreach ($kriteria as $key) {
     Modal::begin([
         'id' => 'modal' . $key->id_kriteria,
@@ -94,5 +115,26 @@ foreach ($kriteria as $key) {
     });
 JS;
     $this->registerJs($script);
+}
+
+// Register modal scripts for editing sub-criteria
+foreach ($kriteria as $key) {
+    foreach ($key->subKriterias as $sub) {
+        Modal::begin([
+            'id' => 'editModal' . $sub->id_sub_kriteria,
+            'size' => 'modal-lg',
+            'title' => '<h4>Edit Data Sub Kriteria</h4>',
+        ]);
+        Modal::end();
+
+        $script = <<<JS
+        $('#editButton$sub->id_sub_kriteria').click(function() {
+            $('#editModal$sub->id_sub_kriteria').modal('show')
+                .find('.modal-body')
+                .load($(this).attr('value'));
+        });
+JS;
+        $this->registerJs($script);
+    }
 }
 ?>

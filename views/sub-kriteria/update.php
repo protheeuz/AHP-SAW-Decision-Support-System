@@ -1,14 +1,10 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
-use app\models\SubKriteria;
-use app\models\Kriteria;
-use yii\web\View;
 
 ?>
 
-<div class="sub-kriteria-create">
+<div class="sub-kriteria-update">
 
     <div class="sub-kriteria-form">
 
@@ -19,6 +15,5 @@ use yii\web\View;
         ]) ?>
 
     </div>
-</div>
 
 </div>

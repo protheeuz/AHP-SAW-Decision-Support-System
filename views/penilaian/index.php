@@ -40,9 +40,15 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <?php
                                     $cek_tombol = Penilaian::find()->where(['id_alternatif' => $keys->id_alternatif])->count();
                                     if ($cek_tombol == 0) {
-                                        echo Html::a('<i class="fa fa-plus"></i> Input', ['create', 'id' => $keys->id_alternatif], ['class' => 'btn btn-success btn-sm']);
+                                        echo Html::button('<i class="fa fa-plus"></i> Input', [
+                                            'value' => Url::to(['penilaian/create', 'id' => $keys->id_alternatif]),
+                                            'class' => 'btn btn-success btn-sm modalButton',
+                                        ]);
                                     } else {
-                                        echo Html::a('<i class="fa fa-edit"></i> Edit', ['update', 'id' => $keys->id_alternatif], ['class' => 'btn btn-warning btn-sm']);
+                                        echo Html::button('<i class="fa fa-edit"></i> Edit', [
+                                            'value' => Url::to(['penilaian/update', 'id' => $keys->id_alternatif]),
+                                            'class' => 'btn btn-warning btn-sm modalButton',
+                                        ]);
                                     }
                                 ?>
                             </td>
@@ -54,3 +60,28 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 </div>
+
+<?php
+Modal::begin([
+    'title' => '<h4>Input/Edit Penilaian</h4>',
+    'id' => 'modal',
+    'size' => 'modal-lg',
+]);
+
+echo '<div id="modalContent"></div>';
+
+Modal::end();
+?>
+
+<?php
+$script = <<< JS
+$(function () {
+    $('.modalButton').click(function () {
+        $('#modal').modal('show')
+            .find('#modalContent')
+            .load($(this).attr('value'));
+    });
+});
+JS;
+$this->registerJs($script);
+?>

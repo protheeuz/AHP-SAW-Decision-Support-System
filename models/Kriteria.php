@@ -15,9 +15,14 @@ class Kriteria extends ActiveRecord
     public function rules()
     {
         return [
-            [['kode_kriteria', 'keterangan', 'jenis'], 'required'],
+            [['kode_kriteria', 'keterangan', 'jenis', 'bobot'], 'required'],
             [['kode_kriteria', 'keterangan', 'jenis'], 'string', 'max' => 255],
-            [['bobot'], 'integer', 'min' => 1, 'max' => 20], // Validasi bobot
+            [['bobot'], 'integer', 'min' => 1, 'max' => 20],
+            ['bobot', function ($attribute, $params, $validator) {
+                if ($this->getTotalSubKriteriaWeight() > $this->$attribute) {
+                    $this->addError($attribute, 'Total sub-kriteria weight exceeds the main criteria weight.');
+                }
+            }]
         ];
     }
 
@@ -30,5 +35,15 @@ class Kriteria extends ActiveRecord
             'jenis' => 'Jenis Kriteria',
             'bobot' => 'Bobot',
         ];
+    }
+
+    public function getTotalSubKriteriaWeight()
+    {
+        return SubKriteria::find()->where(['id_kriteria' => $this->id_kriteria])->sum('nilai');
+    }
+
+    public function getSubKriterias()
+    {
+        return $this->hasMany(SubKriteria::className(), ['id_kriteria' => 'id_kriteria']);
     }
 }

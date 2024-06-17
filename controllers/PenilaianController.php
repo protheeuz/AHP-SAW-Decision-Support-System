@@ -5,57 +5,70 @@ namespace app\controllers;
 use Yii;
 use yii\web\Controller;
 use app\models\Penilaian;
-use app\models\Alternatif;
 use app\models\Kriteria;
-use yii\data\ActiveDataProvider;
+use app\models\Alternatif;
 
 class PenilaianController extends Controller
 {
     public $layout = 'main_admin'; // Menambahkan layout
-    
+
     public function actionIndex()
     {
         $alternatif = Alternatif::find()->all();
-        $kriteria = Kriteria::find()->all();
 
         return $this->render('index', [
             'alternatif' => $alternatif,
-            'kriteria' => $kriteria,
         ]);
     }
 
-    public function actionCreate()
+    public function actionCreate($id)
     {
+        $kriteria = Kriteria::find()->all();
         $model = new Penilaian();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', 'Data berhasil disimpan!');
+        if (Yii::$app->request->post()) {
+            $data = Yii::$app->request->post('Penilaian');
+            foreach ($data as $id_kriteria => $nilai) {
+                $penilaian = new Penilaian();
+                $penilaian->id_alternatif = $id;
+                $penilaian->id_kriteria = $id_kriteria;
+                $penilaian->nilai = $nilai;
+                $penilaian->save();
+            }
+            Yii::$app->session->setFlash('success', 'Data penilaian berhasil disimpan.');
             return $this->redirect(['index']);
         }
 
-        return $this->render('create', [
+        return $this->renderAjax('form', [
+            'kriteria' => $kriteria,
+            'id_alternatif' => $id,
             'model' => $model,
         ]);
     }
 
     public function actionUpdate($id)
     {
-        $model = Penilaian::findOne($id);
+        $kriteria = Kriteria::find()->all();
+        $penilaian = Penilaian::findAll(['id_alternatif' => $id]);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', 'Data berhasil diupdate!');
+        if (Yii::$app->request->post()) {
+            Penilaian::deleteAll(['id_alternatif' => $id]);
+            $data = Yii::$app->request->post('Penilaian');
+            foreach ($data as $id_kriteria => $nilai) {
+                $penilaian = new Penilaian();
+                $penilaian->id_alternatif = $id;
+                $penilaian->id_kriteria = $id_kriteria;
+                $penilaian->nilai = $nilai;
+                $penilaian->save();
+            }
+            Yii::$app->session->setFlash('success', 'Data penilaian berhasil diupdate.');
             return $this->redirect(['index']);
         }
 
-        return $this->render('update', [
-            'model' => $model,
+        return $this->renderAjax('form', [
+            'kriteria' => $kriteria,
+            'id_alternatif' => $id,
+            'penilaian' => $penilaian,
         ]);
-    }
-
-    public function actionDelete($id)
-    {
-        Penilaian::findOne($id)->delete();
-        Yii::$app->session->setFlash('success', 'Data berhasil dihapus!');
-        return $this->redirect(['index']);
     }
 }

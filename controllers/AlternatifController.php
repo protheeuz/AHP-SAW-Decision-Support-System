@@ -1,4 +1,5 @@
 <?php
+
 namespace app\controllers;
 
 use Yii;
@@ -8,8 +9,8 @@ use yii\data\ActiveDataProvider;
 
 class AlternatifController extends Controller
 {
-    public $layout = 'main_admin'; // Menambahkan layout
-    
+    public $layout = 'main_admin';
+
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([

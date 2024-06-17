@@ -2,8 +2,8 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-$this->title = 'Tambah Data Alternatif';
-$this->params['breadcrumbs'][] = ['label' => 'Data Alternatif', 'url' => ['index']];
+$this->title = 'Tambah Data Karyawan';
+$this->params['breadcrumbs'][] = ['label' => 'Data Karyawan', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 

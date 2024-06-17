@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use Yii;
 use yii\db\ActiveRecord;
 
 class SubKriteria extends ActiveRecord
@@ -73,7 +74,31 @@ class SubKriteria extends ActiveRecord
     {
         return [
             [['id_kriteria', 'deskripsi', 'nilai'], 'required'],
-            [['nilai'], 'integer', 'min' => 1, 'max' => 20], // Validasi nilai
+            [['id_kriteria'], 'integer'],
+            [['nilai'], 'number', 'min' => 1, 'max' => 20],
+            ['nilai', function ($attribute, $params, $validator) {
+                $totalSubKriteriaWeight = SubKriteria::find()
+                    ->where(['id_kriteria' => $this->id_kriteria])
+                    ->andWhere(['not', ['id_sub_kriteria' => $this->id_sub_kriteria]])
+                    ->sum('nilai') + $this->$attribute;
+                $mainKriteriaWeight = Kriteria::findOne($this->id_kriteria)->bobot;
+                if ($totalSubKriteriaWeight > $mainKriteriaWeight) {
+                    $this->addError($attribute, 'Total sub-kriteria weight exceeds the main criteria weight.');
+                }
+            }]
         ];
+    }
+    public function actionUpdate($id)
+    {
+        $model = SubKriteria::findOne($id);
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            Yii::$app->session->setFlash('success', 'Data berhasil diupdate!');
+            return $this->redirect(['index']);
+        }
+
+        return $this->renderAjax('update', [
+            'model' => $model,
+        ]);
     }
 }

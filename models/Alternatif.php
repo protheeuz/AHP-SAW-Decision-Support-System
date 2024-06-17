@@ -2,7 +2,6 @@
 
 namespace app\models;
 
-use Yii;
 use yii\db\ActiveRecord;
 
 class Alternatif extends ActiveRecord
@@ -24,7 +23,7 @@ class Alternatif extends ActiveRecord
     {
         return [
             'id_alternatif' => 'ID',
-            'nama' => 'Nama Alternatif',
+            'nama' => 'Nama Karyawan',
         ];
     }
 }

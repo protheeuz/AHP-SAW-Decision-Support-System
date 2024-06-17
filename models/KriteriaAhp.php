@@ -11,15 +11,21 @@ class KriteriaAhp extends ActiveRecord
         return 'kriteria_ahp';
     }
 
-    public static function getKriteriaAhp($id_kriteria_1, $id_kriteria_2)
-    {
-        return self::find()->where(['id_kriteria_1' => $id_kriteria_1, 'id_kriteria_2' => $id_kriteria_2])->one();
-    }
-
     public function rules()
     {
         return [
-            [['id_kriteria_1', 'id_kriteria_2'], 'required'],
+            [['id_kriteria_1', 'id_kriteria_2', 'nilai'], 'required'],
+            [['id_kriteria_1', 'id_kriteria_2'], 'integer'],
+            [['nilai'], 'number'],
+        ];
+    }
+
+    public function attributeLabels()
+    {
+        return [
+            'id_kriteria_1' => 'Kriteria 1',
+            'id_kriteria_2' => 'Kriteria 2',
+            'nilai' => 'Nilai',
         ];
     }
 }
