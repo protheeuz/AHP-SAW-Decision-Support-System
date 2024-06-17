@@ -73,6 +73,7 @@ class SubKriteria extends ActiveRecord
     {
         return [
             [['id_kriteria', 'deskripsi', 'nilai'], 'required'],
+            [['nilai'], 'integer', 'min' => 1, 'max' => 20], // Validasi nilai
         ];
     }
 }

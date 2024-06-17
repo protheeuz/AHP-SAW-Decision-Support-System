@@ -1,9 +1,7 @@
 <?php
 use yii\helpers\Html;
-use yii\grid\GridView;
 use yii\bootstrap4\Modal;
 use yii\helpers\Url;
-use yii\widgets\ActiveForm;
 use app\models\SubKriteria;
 
 $this->title = 'Data Sub Kriteria';
@@ -32,7 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="card-header py-3">
             <div class="d-sm-flex align-items-center justify-content-between">
                 <h6 class="m-0 font-weight-bold text-primary"><i class="fa fa-table"></i> <?= $key->keterangan." (".$key->kode_kriteria.")" ?></h6>
-                <?= Html::button('<i class="fa fa-plus"></i> Tambah Data', ['value' => Url::to(['sub-kriteria/create', 'id' => $key->id_kriteria]), 'class' => 'btn btn-success', 'id' => 'modalButton']) ?>
+                <?= Html::button('<i class="fa fa-plus"></i> Tambah Data', ['value' => Url::to(['sub-kriteria/create', 'id' => $key->id_kriteria]), 'class' => 'btn btn-success', 'id' => 'modalButton' . $key->id_kriteria]) ?>
             </div>
         </div>
 
@@ -58,7 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <td><?= $sub->nilai ?></td>
                             <td>
                                 <div class="btn-group" role="group">
-                                    <?= Html::a('<i class="fa fa-edit"></i>', ['update', 'id' => $sub->id_sub_kriteria], ['class' => 'btn btn-warning btn-sm']) ?>
+                                    <?= Html::a('<i class="fa fa-edit"></i>', ['update', 'id' => $sub->id_sub_kriteria], ['class' => 'btn btn-warning btn-sm', 'data-toggle' => 'modal', 'data-target' => '#modal' . $sub->id_sub_kriteria]) ?>
                                     <?= Html::a('<i class="fa fa-trash"></i>', ['delete', 'id' => $sub->id_sub_kriteria], [
                                         'class' => 'btn btn-danger btn-sm',
                                         'data' => [
@@ -77,3 +75,24 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
     <?php endforeach; ?>
 </div>
+
+<?php
+// Register modal scripts
+foreach ($kriteria as $key) {
+    Modal::begin([
+        'id' => 'modal' . $key->id_kriteria,
+        'size' => 'modal-lg',
+        'title' => '<h4>Tambah Data Sub Kriteria</h4>',
+    ]);
+    Modal::end();
+
+    $script = <<<JS
+    $('#modalButton$key->id_kriteria').click(function() {
+        $('#modal$key->id_kriteria').modal('show')
+            .find('.modal-body')
+            .load($(this).attr('value'));
+    });
+JS;
+    $this->registerJs($script);
+}
+?>

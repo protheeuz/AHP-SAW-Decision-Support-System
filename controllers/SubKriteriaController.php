@@ -6,12 +6,11 @@ use Yii;
 use yii\web\Controller;
 use app\models\SubKriteria;
 use app\models\Kriteria;
-use yii\data\ActiveDataProvider;
 
 class SubKriteriaController extends Controller
 {
     public $layout = 'main_admin'; // Menambahkan layout
-    
+
     public function actionIndex()
     {
         $kriteria = Kriteria::find()->all();
@@ -21,16 +20,17 @@ class SubKriteriaController extends Controller
         ]);
     }
 
-    public function actionCreate()
+    public function actionCreate($id)
     {
         $model = new SubKriteria();
+        $model->id_kriteria = $id;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             Yii::$app->session->setFlash('success', 'Data berhasil disimpan!');
             return $this->redirect(['index']);
         }
 
-        return $this->render('create', [
+        return $this->renderAjax('create', [
             'model' => $model,
         ]);
     }
@@ -44,7 +44,7 @@ class SubKriteriaController extends Controller
             return $this->redirect(['index']);
         }
 
-        return $this->render('update', [
+        return $this->renderAjax('update', [
             'model' => $model,
         ]);
     }

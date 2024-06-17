@@ -3,9 +3,9 @@
 use yii\db\Migration;
 
 /**
- * Class m240616_220309_add_admin_user
+ * Handles the creation of table `{{%user}}`.
  */
-class m240616_220309_add_admin_user extends Migration
+class m240617_075150_add_admin_user extends Migration
 {
     /**
      * {@inheritdoc}

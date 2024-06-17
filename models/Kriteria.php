@@ -17,6 +17,7 @@ class Kriteria extends ActiveRecord
         return [
             [['kode_kriteria', 'keterangan', 'jenis'], 'required'],
             [['kode_kriteria', 'keterangan', 'jenis'], 'string', 'max' => 255],
+            [['bobot'], 'integer', 'min' => 1, 'max' => 20], // Validasi bobot
         ];
     }
 
