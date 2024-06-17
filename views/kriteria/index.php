@@ -28,12 +28,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'kode_kriteria',
             'keterangan',
-            [
-                'attribute' => 'bobot',
-                'value' => function($model) {
-                    return empty($model->bobot) ? '-' : round($model->bobot, 2);
-                }
-            ],
             'jenis',
 
             ['class' => 'yii\grid\ActionColumn'],

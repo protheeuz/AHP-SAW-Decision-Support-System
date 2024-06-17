@@ -19,7 +19,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <?= $form->field($model, 'kode_kriteria')->textInput(['maxlength' => true]) ?>
         <?= $form->field($model, 'keterangan')->textInput(['maxlength' => true]) ?>
-        <?= $form->field($model, 'bobot')->input('number', ['min' => 1, 'max' => 20]) ?>
         <?= $form->field($model, 'jenis')->dropDownList([
             '' => '--Pilih Jenis Kriteria--',
             'Benefit' => 'Benefit',

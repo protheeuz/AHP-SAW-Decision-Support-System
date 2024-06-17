@@ -18,16 +18,21 @@ class KriteriaController extends Controller
             'query' => Kriteria::find(),
         ]);
 
+        $kriteria = Kriteria::find()->all();
+
         return $this->render('index', [
             'dataProvider' => $dataProvider,
+            'kriteria' => $kriteria,
         ]);
     }
+
 
     public function actionPrioritas()
     {
         $kriteria = Kriteria::find()->all();
 
         if (Yii::$app->request->post('save')) {
+            // Save comparison data
             KriteriaAhp::deleteAll();
             foreach ($kriteria as $i => $kriteria1) {
                 foreach ($kriteria as $j => $kriteria2) {
@@ -45,7 +50,10 @@ class KriteriaController extends Controller
         }
 
         if (Yii::$app->request->post('check')) {
-            $id_kriteria = array_map(function($k) { return $k->id_kriteria; }, $kriteria);
+            // Check consistency and calculate weights
+            $id_kriteria = array_map(function ($k) {
+                return $k->id_kriteria;
+            }, $kriteria);
             $matrik_kriteria = $this->ahpGetMatrikKriteria($id_kriteria);
             $jumlah_kolom = $this->ahpGetJumlahKolom($matrik_kriteria);
             $matrik_normalisasi = $this->ahpGetNormalisasi($matrik_kriteria, $jumlah_kolom);
@@ -54,13 +62,15 @@ class KriteriaController extends Controller
             $jumlah_matrik_baris = $this->ahpGetJumlahMatrikBaris($matrik_baris);
             $hasil_tabel_konsistensi = $this->ahpGetTabelKonsistensi($jumlah_matrik_baris, $prioritas);
             $isConsistent = $this->ahpUjiKonsistensi($hasil_tabel_konsistensi);
-            
+
             if ($isConsistent) {
+                $total_prioritas = array_sum($prioritas);
                 foreach ($kriteria as $i => $row) {
-                    $row->bobot = $prioritas[$i];
+                    // Normalisasi bobot ke skala 100%
+                    $row->bobot = ($prioritas[$i] / $total_prioritas) * 100;
                     $row->save();
                 }
-                Yii::$app->session->setFlash('success', 'Nilai perbandingan konsisten!');
+                Yii::$app->session->setFlash('success', 'Nilai perbandingan konsisten dan bobot berhasil diperbarui!');
             } else {
                 Yii::$app->session->setFlash('error', 'Nilai perbandingan tidak konsisten!');
             }
@@ -77,8 +87,8 @@ class KriteriaController extends Controller
         ]);
     }
 
-    // AHP Methods
 
+    // AHP Methods
     private function ahpGetMatrikKriteria($kriteria)
     {
         $matrik = [];
@@ -253,5 +263,4 @@ class KriteriaController extends Controller
         }
         return $list_data4;
     }
-
 }
