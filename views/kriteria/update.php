@@ -19,15 +19,15 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <?= $form->field($model, 'kode_kriteria')->textInput(['maxlength' => true]) ?>
         <?= $form->field($model, 'keterangan')->textInput(['maxlength' => true]) ?>
-        <?= $form->field($model, 'bobot')->input('number', ['min' => 1, 'max' => 20]) ?>
         <?= $form->field($model, 'jenis')->dropDownList([
             '' => '--Pilih Jenis Kriteria--',
             'Benefit' => 'Benefit',
             'Cost' => 'Cost',
         ], ['required' => true]) ?>
+        <?= $form->field($model, 'bobot')->dropDownList(array_combine(range(1, 20), range(1, 20)), ['prompt' => '--Pilih Bobot--']) ?>
 
         <div class="form-group">
-            <?= Html::submitButton('Update', ['class' => 'btn btn-success']) ?>
+            <?= Html::submitButton('Simpan', ['class' => 'btn btn-success']) ?>
             <?= Html::resetButton('Reset', ['class' => 'btn btn-info']) ?>
         </div>
 

@@ -13,6 +13,31 @@ class User extends ActiveRecord implements IdentityInterface
         return 'user';
     }
 
+    public function rules()
+    {
+        return [
+            [['id_user_level', 'email', 'nama', 'username', 'password_hash'], 'required'],
+            [['id_user_level'], 'integer'],
+            [['email', 'nama', 'username', 'password_hash', 'auth_key', 'access_token'], 'string', 'max' => 255],
+            [['email'], 'email'],
+            [['username'], 'unique'],
+            [['email'], 'unique'],
+        ];
+    }
+
+    public function attributeLabels()
+    {
+        return [
+            'id_user_level' => 'User Level',
+            'email' => 'Email',
+            'nama' => 'Name',
+            'username' => 'Username',
+            'password_hash' => 'Password Hash',
+            'auth_key' => 'Auth Key',
+            'access_token' => 'Access Token',
+        ];
+    }
+
     public static function findByUsername($username)
     {
         return static::findOne(['username' => $username]);
@@ -21,7 +46,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function validatePassword($password)
     {
         // Assuming passwords are stored hashed
-        return Yii::$app->security->validatePassword($password, $this->password);
+        return Yii::$app->security->validatePassword($password, $this->password_hash);
     }
 
     public static function findIdentity($id)
@@ -31,8 +56,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        // Implement sesuai kebutuhan aplikasi Anda
-        return null;
+        return static::findOne(['access_token' => $token]);
     }
 
     public function getId()
@@ -42,14 +66,12 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function getAuthKey()
     {
-        // Implement sesuai kebutuhan aplikasi Anda
-        return null;
+        return $this->auth_key;
     }
 
     public function validateAuthKey($authKey)
     {
-        // Implement sesuai kebutuhan aplikasi Anda
-        return false;
+        return $this->auth_key === $authKey;
     }
 
     public static function getUsers()
@@ -92,12 +114,5 @@ class User extends ActiveRecord implements IdentityInterface
     public static function getUserLevels()
     {
         return UserLevel::find()->all();
-    }
-
-    public function rules()
-    {
-        return [
-            [['id_user_level', 'email', 'nama', 'username', 'password'], 'required'],
-        ];
     }
 }

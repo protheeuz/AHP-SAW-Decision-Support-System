@@ -24,24 +24,28 @@ class SubKriteriaController extends Controller
     {
         $model = new SubKriteria();
         $model->id_kriteria = $id;
-
-        // Hitung total bobot sub-kriteria yang sudah ada untuk kriteria ini
+    
+        // Load data yang dibutuhkan untuk form
         $total_sub_kriteria = SubKriteria::find()->where(['id_kriteria' => $id])->sum('nilai');
-        // Ambil total bobot untuk kriteria ini
         $total_bobot_kriteria = Kriteria::findOne($id)->bobot;
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', 'Data berhasil disimpan!');
-            return $this->redirect(['index']);
+    
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->validate() && $model->save()) {
+                Yii::$app->session->setFlash('success', 'Data berhasil disimpan!');
+                return $this->redirect(['index']);
+            } else {
+                // Menampilkan pesan kesalahan
+                Yii::$app->session->setFlash('error', 'Total nilai sub-kriteria tidak bisa melebihi bobot kriteria.');
+            }
         }
-
+    
+        // Render view create dengan model dan data yang diperlukan
         return $this->renderAjax('create', [
             'model' => $model,
             'total_sub_kriteria' => $total_sub_kriteria,
             'total_bobot_kriteria' => $total_bobot_kriteria,
         ]);
     }
-
     public function actionUpdate($id)
     {
         $model = SubKriteria::findOne($id);

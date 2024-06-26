@@ -1,9 +1,7 @@
 <?php
 use yii\helpers\Html;
-use yii\grid\GridView;
 use yii\bootstrap4\Modal;
 use yii\helpers\Url;
-use yii\widgets\ActiveForm;
 use app\models\Penilaian;
 
 $this->title = 'Data Penilaian';

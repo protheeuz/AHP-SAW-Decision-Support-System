@@ -1,6 +1,5 @@
 <?php
 use yii\helpers\Html;
-use yii\grid\GridView;
 
 $this->title = 'Hasil Akhir Perangkingan';
 $this->params['breadcrumbs'][] = $this->title;
@@ -33,10 +32,10 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?php $no=1; foreach ($hasil as $keys): ?>
                         <tr align="center">
                             <td align="left">
-                                <?= $keys->alternatif->nama; ?>
+                                <?= Html::encode($keys->alternatif->nama) ?>
                             </td>
                             <td><?= round($keys->nilai, 3) ?></td>
-                            <td><?= $no; ?></td>
+                            <td><?= $no ?></td>
                         </tr>
                         <?php $no++; endforeach; ?>
                     </tbody>

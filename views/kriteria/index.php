@@ -29,6 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'kode_kriteria',
             'keterangan',
             'jenis',
+            'bobot', // Tambahkan kolom bobot
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

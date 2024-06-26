@@ -1,11 +1,10 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
-use app\models\SubKriteria;
-use app\models\Kriteria;
-use yii\web\View;
 
+$this->title = 'Tambah Data Sub Kriteria';
+$this->params['breadcrumbs'][] = ['label' => 'Data Sub Kriteria', 'url' => ['index']];
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="sub-kriteria-create">
@@ -19,6 +18,4 @@ use yii\web\View;
         ]) ?>
 
     </div>
-</div>
-
 </div>

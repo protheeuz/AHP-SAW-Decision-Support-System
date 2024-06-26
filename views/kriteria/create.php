@@ -24,6 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'Benefit' => 'Benefit',
             'Cost' => 'Cost',
         ], ['required' => true]) ?>
+        <?= $form->field($model, 'bobot')->dropDownList(array_combine(range(1, 20), range(1, 20)), ['prompt' => '--Pilih Bobot--']) ?>
 
         <div class="form-group">
             <?= Html::submitButton('Simpan', ['class' => 'btn btn-success']) ?>

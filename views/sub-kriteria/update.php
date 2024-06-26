@@ -1,7 +1,11 @@
 <?php
 
 use yii\helpers\Html;
+use yii\widgets\ActiveForm;
 
+$this->title = 'Update Data Sub Kriteria';
+$this->params['breadcrumbs'][] = ['label' => 'Data Sub Kriteria', 'url' => ['index']];
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="sub-kriteria-update">
@@ -15,5 +19,4 @@ use yii\helpers\Html;
         ]) ?>
 
     </div>
-
 </div>

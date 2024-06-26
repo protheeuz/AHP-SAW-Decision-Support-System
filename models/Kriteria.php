@@ -15,8 +15,9 @@ class Kriteria extends ActiveRecord
     public function rules()
     {
         return [
-            [['kode_kriteria', 'keterangan', 'jenis'], 'required'],
+            [['kode_kriteria', 'keterangan', 'jenis', 'bobot'], 'required'],
             [['kode_kriteria', 'keterangan', 'jenis'], 'string', 'max' => 255],
+            [['bobot'], 'integer', 'min' => 1, 'max' => 20],
         ];
     }
 
@@ -25,13 +26,14 @@ class Kriteria extends ActiveRecord
         return [
             'id_kriteria' => 'ID',
             'kode_kriteria' => 'Kode Kriteria',
-            'keterangan' => 'Nama Kriteria',
+            'keterangan' => 'Keterangan',
             'jenis' => 'Jenis Kriteria',
+            'bobot' => 'Bobot',
         ];
     }
 
     public function getSubKriterias()
     {
-        return $this->hasMany(SubKriteria::className(), ['id_kriteria' => 'id_kriteria']);
+        return $this->hasMany(SubKriteria::class, ['id_kriteria' => 'id_kriteria']);
     }
 }

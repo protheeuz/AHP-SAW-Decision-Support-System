@@ -22,7 +22,7 @@ class Alternatif extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_alternatif' => 'ID',
+            'id_alternatif' => 'ID Alternatif', // Sesuaikan label dengan nama kolom yang benar
             'nama' => 'Nama Karyawan',
         ];
     }

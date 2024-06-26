@@ -17,7 +17,11 @@ class m240617_075150_add_admin_user extends Migration
             'email' => 'hq@matimatech.com',
             'nama' => 'Matimatech',
             'username' => 'admin',
-            'password' => Yii::$app->security->generatePasswordHash('admin'),
+            'password_hash' => Yii::$app->security->generatePasswordHash('admin'), // Menggunakan password_hash
+            'auth_key' => Yii::$app->security->generateRandomString(), // Menghasilkan auth_key acak
+            'access_token' => Yii::$app->security->generateRandomString(), // Menghasilkan access_token acak
+            'created_at' => time(), // Timestamp untuk waktu pembuatan
+            'updated_at' => time(), // Timestamp untuk waktu update
         ]);
     }
 

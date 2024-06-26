@@ -57,7 +57,7 @@ class SubKriteria extends ActiveRecord
     public static function countKriteria()
     {
         return self::find()
-            ->select(['id_kriteria', 'COUNT(deskripsi) AS jml_setoran'])
+            ->select(['id_kriteria', 'COUNT(nama_sub_kriteria) AS jml_setoran'])
             ->groupBy(['id_kriteria'])
             ->all();
     }
@@ -69,13 +69,13 @@ class SubKriteria extends ActiveRecord
             ->orderBy(['nilai' => SORT_DESC])
             ->all();
     }
-
     public function rules()
     {
         return [
-            [['id_kriteria', 'deskripsi', 'nilai'], 'required'],
+            [['id_kriteria', 'nama_sub_kriteria', 'nilai'], 'required'],
             [['id_kriteria'], 'integer'],
             [['nilai'], 'number', 'min' => 1, 'max' => 20],
+            [['nama_sub_kriteria'], 'string', 'max' => 255],
             ['nilai', function ($attribute, $params, $validator) {
                 $totalSubKriteriaWeight = SubKriteria::find()
                     ->where(['id_kriteria' => $this->id_kriteria])
@@ -83,22 +83,20 @@ class SubKriteria extends ActiveRecord
                     ->sum('nilai') + $this->$attribute;
                 $mainKriteriaWeight = Kriteria::findOne($this->id_kriteria)->bobot;
                 if ($totalSubKriteriaWeight > $mainKriteriaWeight) {
-                    $this->addError($attribute, 'Total sub-kriteria weight exceeds the main criteria weight.');
+                    $this->addError($attribute, 'Total nilai sub-kriteria tidak bisa melebihi bobot kriteria.');
                 }
             }]
         ];
     }
-    public function actionUpdate($id)
+    
+
+    public function attributeLabels()
     {
-        $model = SubKriteria::findOne($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', 'Data berhasil diupdate!');
-            return $this->redirect(['index']);
-        }
-
-        return $this->renderAjax('update', [
-            'model' => $model,
-        ]);
+        return [
+            'id_sub_kriteria' => 'ID',
+            'id_kriteria' => 'Kriteria',
+            'nama_sub_kriteria' => 'Nama Sub Kriteria',
+            'nilai' => 'Nilai',
+        ];
     }
 }
