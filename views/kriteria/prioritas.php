@@ -63,7 +63,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             <td class="text-center" colspan="3">
                                 <?= Html::submitButton('Simpan', ['class' => 'btn btn-primary', 'name' => 'save']) ?>
                                 <?= Html::submitButton('Cek Konsistensi', ['class' => 'btn btn-warning', 'name' => 'check']) ?>
-                                <?= Html::a('Reset', ['reset'], ['class' => 'btn btn-danger']) ?>
                             </td>
                         </tr>
                     </tbody>

@@ -88,8 +88,8 @@ class KriteriaController extends Controller
                     Yii::info('Data perbandingan diterima', __METHOD__);
     
                     // Hapus data kriteria_ahp yang ada
-                    KriteriaAhp::deleteAll();
-                    Yii::info('Data kriteria_ahp dihapus', __METHOD__);
+                    $deleteResult = KriteriaAhp::deleteAll();
+                    Yii::info('Data kriteria_ahp dihapus, result: ' . $deleteResult, __METHOD__);
     
                     $comparisonData = $postData['comparison'];
                     Yii::info('Data perbandingan: ' . json_encode($comparisonData), __METHOD__);
@@ -106,13 +106,23 @@ class KriteriaController extends Controller
                                     $model->id_kriteria_2 = $kriteria2->id_kriteria;
                                     $model->nilai = $nilai_input;
     
+                                    Yii::info("Mencoba menyimpan data: " . json_encode($model->attributes), __METHOD__);
+    
                                     if (!$model->save()) {
                                         Yii::error('Gagal menyimpan data perbandingan: ' . json_encode($model->errors), __METHOD__);
+                                        Yii::$app->session->setFlash('error', 'Gagal menyimpan data perbandingan: ' . json_encode($model->errors));
+                                        return $this->render('prioritas', [
+                                            'kriteria' => $kriteria,
+                                        ]);
                                     } else {
                                         Yii::info("Data perbandingan disimpan: {$kriteria1->id_kriteria} - {$kriteria2->id_kriteria} dengan nilai {$nilai_input}", __METHOD__);
                                     }
                                 } else {
                                     Yii::error("Nilai perbandingan tidak ditemukan untuk {$kriteria1->id_kriteria} - {$kriteria2->id_kriteria}", __METHOD__);
+                                    Yii::$app->session->setFlash('error', 'Nilai perbandingan tidak ditemukan.');
+                                    return $this->render('prioritas', [
+                                        'kriteria' => $kriteria,
+                                    ]);
                                 }
                             }
                         }
@@ -121,6 +131,9 @@ class KriteriaController extends Controller
                 } else {
                     Yii::$app->session->setFlash('error', 'Tidak ada data perbandingan yang diterima.');
                     Yii::error('Tidak ada data perbandingan yang diterima.', __METHOD__);
+                    return $this->render('prioritas', [
+                        'kriteria' => $kriteria,
+                    ]);
                 }
             }
     
@@ -165,6 +178,12 @@ class KriteriaController extends Controller
                         $row->bobot = ($prioritas[$i] / $total_prioritas) * 100;
                         if (!$row->save()) {
                             Yii::error('Gagal menyimpan bobot kriteria: ' . json_encode($row->errors), __METHOD__);
+                            Yii::$app->session->setFlash('error', 'Gagal menyimpan bobot kriteria: ' . json_encode($row->errors));
+                            return $this->render('prioritas', [
+                                'kriteria' => $kriteria,
+                            ]);
+                        } else {
+                            Yii::info("Bobot kriteria disimpan: {$row->id_kriteria} dengan bobot {$row->bobot}", __METHOD__);
                         }
                     }
                     Yii::$app->session->setFlash('success', 'Nilai perbandingan konsisten dan bobot berhasil diperbarui!');

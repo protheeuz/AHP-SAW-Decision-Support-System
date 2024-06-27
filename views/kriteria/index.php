@@ -25,12 +25,10 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
             'kode_kriteria',
             'keterangan',
             'jenis',
-            'bobot', // Tambahkan kolom bobot
-
+            'bobot', 
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
