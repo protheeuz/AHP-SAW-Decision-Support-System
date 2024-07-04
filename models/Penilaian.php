@@ -12,21 +12,44 @@ class Penilaian extends ActiveRecord
         return 'penilaian';
     }
 
-    public function rules()
+    public static function getPenilaianByAlternatif($id_alternatif)
     {
-        return [
-            [['id_alternatif', 'id_kriteria', 'nilai'], 'required'],
-            [['id_alternatif', 'id_kriteria', 'nilai'], 'integer'],
-        ];
+        return self::find()->where(['id_alternatif' => $id_alternatif])->all();
     }
 
-    public function attributeLabels()
+    public static function calculateScores($alternatif)
     {
-        return [
-            'id_penilaian' => 'ID',
-            'id_alternatif' => 'Alternatif',
-            'id_kriteria' => 'Kriteria',
-            'nilai' => 'Nilai',
-        ];
+        $scores = [];
+        $kriteria = Kriteria::find()->all();
+
+        foreach ($alternatif as $alt) {
+            $total_score = 0;
+            foreach ($kriteria as $krit) {
+                $penilaian = self::findOne(['id_alternatif' => $alt->id_alternatif, 'id_kriteria' => $krit->id_kriteria]);
+                if ($penilaian) {
+                    $total_score += $penilaian->nilai * $krit->bobot / 100;
+                }
+            }
+            $scores[] = [
+                'nama' => $alt->nama,
+                'total_score' => $total_score,
+            ];
+        }
+
+        // Mengurutkan hasil berdasarkan skor total dari yang tertinggi ke terendah
+        usort($scores, function ($a, $b) {
+            return $b['total_score'] <=> $a['total_score'];
+        });
+
+        return $scores;
+    }
+    public function getAlternatif()
+    {
+        return $this->hasOne(Alternatif::class, ['id_alternatif' => 'id_alternatif']);
+    }
+
+    public function getKriteria()
+    {
+        return $this->hasOne(Kriteria::class, ['id_kriteria' => 'id_kriteria']);
     }
 }
