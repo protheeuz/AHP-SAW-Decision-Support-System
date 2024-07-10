@@ -8,6 +8,7 @@ use app\models\Kriteria;
 use app\models\KriteriaAhp;
 use yii\web\NotFoundHttpException;
 use yii\data\ActiveDataProvider;
+use yii\db\Exception;
 
 class KriteriaController extends Controller
 {
@@ -38,9 +39,9 @@ class KriteriaController extends Controller
         ]);
     }
 
-    public function actionUpdate($id)
+    public function actionUpdate($id_kriteria)
     {
-        $model = $this->findModel($id);
+        $model = $this->findModel($id_kriteria);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             Yii::$app->session->setFlash('success', 'Data berhasil diperbarui.');
@@ -52,16 +53,23 @@ class KriteriaController extends Controller
         ]);
     }
 
-    public function actionDelete($id)
+    public function actionView($id_kriteria)
     {
-        $this->findModel($id)->delete();
+        return $this->render('view', [
+            'model' => $this->findModel($id_kriteria),
+        ]);
+    }
+
+    public function actionDelete($id_kriteria)
+    {
+        $this->findModel($id_kriteria)->delete();
         Yii::$app->session->setFlash('success', 'Data berhasil dihapus.');
         return $this->redirect(['index']);
     }
 
-    protected function findModel($id)
+    protected function findModel($id_kriteria)
     {
-        if (($model = Kriteria::findOne($id)) !== null) {
+        if (($model = Kriteria::findOne($id_kriteria)) !== null) {
             return $model;
         }
 
@@ -70,141 +78,72 @@ class KriteriaController extends Controller
 
     public function actionPrioritas()
     {
-        Yii::info('actionPrioritas dimulai', __METHOD__);
-    
         $kriteria = Kriteria::find()->all();
-        Yii::info('Kriteria ditemukan: ' . count($kriteria), __METHOD__);
-    
+
         if (Yii::$app->request->isPost) {
-            Yii::info('Request POST diterima', __METHOD__);
-    
             $postData = Yii::$app->request->post();
-            Yii::info('Data POST: ' . json_encode($postData), __METHOD__);
-    
-            if (Yii::$app->request->post('save')) {
-                Yii::info('Tombol Simpan diklik', __METHOD__);
-    
-                if (isset($postData['comparison'])) {
-                    Yii::info('Data perbandingan diterima', __METHOD__);
-    
-                    // Hapus data kriteria_ahp yang ada
-                    $deleteResult = KriteriaAhp::deleteAll();
-                    Yii::info('Data kriteria_ahp dihapus, result: ' . $deleteResult, __METHOD__);
-    
+
+            if (isset($postData['comparison'])) {
+                $transaction = Yii::$app->db->beginTransaction();
+                try {
+                    KriteriaAhp::deleteAll();
                     $comparisonData = $postData['comparison'];
-                    Yii::info('Data perbandingan: ' . json_encode($comparisonData), __METHOD__);
-    
+
                     foreach ($kriteria as $i => $kriteria1) {
                         foreach ($kriteria as $j => $kriteria2) {
-                            if ($i < $j) {
-                                $nilai_input = isset($comparisonData[$kriteria1->id_kriteria][$kriteria2->id_kriteria]) ? $comparisonData[$kriteria1->id_kriteria][$kriteria2->id_kriteria] : null;
-                                Yii::info("Memproses perbandingan: {$kriteria1->id_kriteria} - {$kriteria2->id_kriteria}, nilai: {$nilai_input}", __METHOD__);
-    
-                                if ($nilai_input !== null) {
-                                    $model = new KriteriaAhp();
-                                    $model->id_kriteria_1 = $kriteria1->id_kriteria;
-                                    $model->id_kriteria_2 = $kriteria2->id_kriteria;
-                                    $model->nilai = $nilai_input;
-    
-                                    Yii::info("Mencoba menyimpan data: " . json_encode($model->attributes), __METHOD__);
-    
-                                    if (!$model->save()) {
-                                        Yii::error('Gagal menyimpan data perbandingan: ' . json_encode($model->errors), __METHOD__);
-                                        Yii::$app->session->setFlash('error', 'Gagal menyimpan data perbandingan: ' . json_encode($model->errors));
-                                        return $this->render('prioritas', [
-                                            'kriteria' => $kriteria,
-                                        ]);
-                                    } else {
-                                        Yii::info("Data perbandingan disimpan: {$kriteria1->id_kriteria} - {$kriteria2->id_kriteria} dengan nilai {$nilai_input}", __METHOD__);
-                                    }
-                                } else {
-                                    Yii::error("Nilai perbandingan tidak ditemukan untuk {$kriteria1->id_kriteria} - {$kriteria2->id_kriteria}", __METHOD__);
-                                    Yii::$app->session->setFlash('error', 'Nilai perbandingan tidak ditemukan.');
-                                    return $this->render('prioritas', [
-                                        'kriteria' => $kriteria,
-                                    ]);
+                            if ($i < $j && isset($comparisonData[$kriteria1->id][$kriteria2->id])) {
+                                $model = new KriteriaAhp();
+                                $model->id_kriteria_1 = $kriteria1->id;
+                                $model->id_kriteria_2 = $kriteria2->id;
+                                $model->nilai = $comparisonData[$kriteria1->id][$kriteria2->id];
+                                if (!$model->save()) {
+                                    $transaction->rollBack();
+                                    Yii::$app->session->addFlash('error', 'Gagal menyimpan data perbandingan.');
+                                    return $this->render('prioritas', ['kriteria' => $kriteria]);
                                 }
                             }
                         }
                     }
-                    Yii::$app->session->setFlash('success', 'Data berhasil disimpan!');
-                } else {
-                    Yii::$app->session->setFlash('error', 'Tidak ada data perbandingan yang diterima.');
-                    Yii::error('Tidak ada data perbandingan yang diterima.', __METHOD__);
-                    return $this->render('prioritas', [
-                        'kriteria' => $kriteria,
-                    ]);
+                    $transaction->commit();
+                    Yii::$app->session->addFlash('success', 'Data berhasil disimpan!');
+                } catch (Exception $e) {
+                    $transaction->rollBack();
+                    Yii::$app->session->addFlash('error', 'Terjadi kesalahan saat menyimpan data: ' . $e->getMessage());
                 }
             }
-    
-            if (Yii::$app->request->post('check')) {
-                Yii::info('Tombol Cek Konsistensi diklik', __METHOD__);
-    
-                // Check consistency and calculate weights
+
+            if (isset($postData['check'])) {
                 $id_kriteria = array_map(function ($k) {
-                    return $k->id_kriteria;
+                    return $k->id;
                 }, $kriteria);
-                Yii::info('ID Kriteria: ' . json_encode($id_kriteria), __METHOD__);
-    
                 $matrik_kriteria = $this->ahpGetMatrikKriteria($id_kriteria);
-                Yii::info('Matrik Kriteria: ' . json_encode($matrik_kriteria), __METHOD__);
-    
                 $jumlah_kolom = $this->ahpGetJumlahKolom($matrik_kriteria);
-                Yii::info('Jumlah Kolom: ' . json_encode($jumlah_kolom), __METHOD__);
-    
                 $matrik_normalisasi = $this->ahpGetNormalisasi($matrik_kriteria, $jumlah_kolom);
-                Yii::info('Matrik Normalisasi: ' . json_encode($matrik_normalisasi), __METHOD__);
-    
                 $prioritas = $this->ahpGetPrioritas($matrik_normalisasi);
-                Yii::info('Prioritas: ' . json_encode($prioritas), __METHOD__);
-    
                 $matrik_baris = $this->ahpGetMatrikBaris($prioritas, $matrik_kriteria);
-                Yii::info('Matrik Baris: ' . json_encode($matrik_baris), __METHOD__);
-    
                 $jumlah_matrik_baris = $this->ahpGetJumlahMatrikBaris($matrik_baris);
-                Yii::info('Jumlah Matriks Baris: ' . json_encode($jumlah_matrik_baris), __METHOD__);
-    
                 $hasil_tabel_konsistensi = $this->ahpGetTabelKonsistensi($jumlah_matrik_baris, $prioritas);
-                Yii::info('Tabel Konsistensi: ' . json_encode($hasil_tabel_konsistensi), __METHOD__);
-    
                 $konsistensi_result = $this->ahpUjiKonsistensi($hasil_tabel_konsistensi);
-                Yii::info('Hasil Uji Konsistensi: ' . json_encode($konsistensi_result), __METHOD__);
-    
-                $isConsistent = $konsistensi_result['isConsistent'];
-    
-                if ($isConsistent) {
+
+                if ($konsistensi_result['isConsistent']) {
                     $total_prioritas = array_sum($prioritas);
                     foreach ($kriteria as $i => $row) {
                         $row->bobot = ($prioritas[$i] / $total_prioritas) * 100;
                         if (!$row->save()) {
-                            Yii::error('Gagal menyimpan bobot kriteria: ' . json_encode($row->errors), __METHOD__);
-                            Yii::$app->session->setFlash('error', 'Gagal menyimpan bobot kriteria: ' . json_encode($row->errors));
-                            return $this->render('prioritas', [
-                                'kriteria' => $kriteria,
-                            ]);
-                        } else {
-                            Yii::info("Bobot kriteria disimpan: {$row->id_kriteria} dengan bobot {$row->bobot}", __METHOD__);
+                            Yii::$app->session->addFlash('error', 'Gagal menyimpan bobot kriteria.');
+                            return $this->render('prioritas', ['kriteria' => $kriteria]);
                         }
                     }
-                    Yii::$app->session->setFlash('success', 'Nilai perbandingan konsisten dan bobot berhasil diperbarui!');
+                    Yii::$app->session->addFlash('success', 'Nilai perbandingan konsisten dan bobot berhasil diperbarui!');
                 } else {
-                    Yii::$app->session->setFlash('error', 'Nilai perbandingan tidak konsisten!');
+                    Yii::$app->session->addFlash('error', 'Nilai perbandingan tidak konsisten!');
                 }
-    
-                return $this->render('prioritas', [
-                    'kriteria' => $kriteria,
-                    'isConsistent' => $isConsistent,
-                    'tabelKonsistensi' => $hasil_tabel_konsistensi,
-                ]);
             }
-        } else {
-            Yii::info('Request bukan POST', __METHOD__);
         }
-    
-        return $this->render('prioritas', [
-            'kriteria' => $kriteria,
-        ]);
+
+        return $this->render('prioritas', ['kriteria' => $kriteria]);
     }
+
     // AHP Methods
     private function ahpGetMatrikKriteria($kriteria)
     {

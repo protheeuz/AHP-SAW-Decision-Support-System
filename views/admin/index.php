@@ -55,7 +55,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <h4 class="text-primary h4 mb-0 font-weight-bold text-gray-800 text-decoration-none"><?= $alternatif ?></h4>
-                            <p><div class="h5 mb-0 font-weight-normal text-gray-400"><a href="<?= Url::to(['alternatif/index']); ?>" class="text-secondary text-decoration-none">Data Alternatif</a></div>
+                            <p><div class="h5 mb-0 font-weight-normal text-gray-400"><a href="<?= Url::to(['alternatif/index']); ?>" class="text-secondary text-decoration-none">Data Karyawan</a></div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-users fa-2x text-gray-300"></i>

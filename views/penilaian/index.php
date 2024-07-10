@@ -1,4 +1,5 @@
 <?php
+
 use yii\helpers\Html;
 use yii\bootstrap4\Modal;
 use yii\helpers\Url;
@@ -30,12 +31,13 @@ $this->params['breadcrumbs'][] = $this->title;
                         </tr>
                     </thead>
                     <tbody>
-                        <?php $no=1; foreach ($alternatif as $keys): ?>
-                        <tr align="center">
-                            <td><?= $no ?></td>
-                            <td align="left"><?= $keys->nama ?></td>
-                            <td>
-                                <?php
+                        <?php $no = 1;
+                        foreach ($alternatif as $keys) : ?>
+                            <tr align="center">
+                                <td><?= $no ?></td>
+                                <td align="left"><?= $keys->nama ?></td>
+                                <td>
+                                    <?php
                                     $cek_tombol = Penilaian::find()->where(['id_alternatif' => $keys->id_alternatif])->count();
                                     if ($cek_tombol == 0) {
                                         echo Html::button('<i class="fa fa-plus"></i> Input', [
@@ -48,10 +50,11 @@ $this->params['breadcrumbs'][] = $this->title;
                                             'class' => 'btn btn-warning btn-sm modalButton',
                                         ]);
                                     }
-                                ?>
-                            </td>
-                        </tr>
-                        <?php $no++; endforeach; ?>
+                                    ?>
+                                </td>
+                            </tr>
+                        <?php $no++;
+                        endforeach; ?>
                     </tbody>
                 </table>
             </div>

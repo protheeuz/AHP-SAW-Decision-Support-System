@@ -64,11 +64,16 @@ $this->params['breadcrumbs'][] = $this->title;
                             foreach ($sub_kriteria1 as $sub) : ?>
                                 <tr align="center">
                                     <td><?= $no ?></td>
-                                    <td align="left"><?= $sub->nama_sub_kriteria ?></td>
+                                    <td align="left"><?= $sub->deskripsi ?></td>
                                     <td><?= $sub->nilai ?></td>
                                     <td>
-                                        <div class="btn-group" role="group">
-                                            <?= Html::button('<i class="fa fa-edit"></i> Edit', ['value' => Url::to(['sub-kriteria/update', 'id' => $sub->id_sub_kriteria]), 'class' => 'btn btn-warning btn-sm modalButton', 'data-toggle' => 'modal', 'data-target' => '#editModal' . $sub->id_sub_kriteria]) ?>
+                                        <!-- <div class="btn-group" role="group">
+                                            <?= Html::button('<i class="fa fa-edit"></i> Edit', [
+                                                'value' => Url::to(['sub-kriteria/update', 'id' => $sub->id_sub_kriteria]),
+                                                'class' => 'btn btn-warning btn-sm modalButton',
+                                                'data-toggle' => 'modal',
+                                                'data-target' => '#editModal' . $sub->id_sub_kriteria
+                                            ]) ?> -->
                                             <?= Html::a('<i class="fa fa-trash"></i>', ['delete', 'id' => $sub->id_sub_kriteria], [
                                                 'class' => 'btn btn-danger btn-sm',
                                                 'data' => [
@@ -105,6 +110,16 @@ $this->params['breadcrumbs'][] = $this->title;
         ]);
 
         echo "<div id='modalContent" . $key->id_kriteria . "'></div>";
+
+        Modal::end();
+
+        Modal::begin([
+            'id' => 'editModal' . $sub->id_sub_kriteria,
+            'size' => 'modal-lg',
+            'title' => '<h4>Edit Data Sub Kriteria</h4>',
+        ]);
+
+        echo "<div id='editModalContent" . $sub->id_sub_kriteria . "'></div>";
 
         Modal::end();
         ?>
@@ -147,4 +162,3 @@ $(function() {
 });
 JS;
 $this->registerJs($script);
-?>

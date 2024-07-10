@@ -23,6 +23,7 @@ class AppAsset extends AssetBundle
         'vendor/datatables/jquery.dataTables.min.js',
         'vendor/datatables/dataTables.bootstrap4.min.js',
         'js/demo/datatables-demo.js',
+        'https://cdn.jsdelivr.net/npm/chart.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',

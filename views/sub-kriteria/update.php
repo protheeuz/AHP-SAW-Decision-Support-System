@@ -3,20 +3,23 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-$this->title = 'Update Data Sub Kriteria';
-$this->params['breadcrumbs'][] = ['label' => 'Data Sub Kriteria', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div class="sub-kriteria-update">
+<div class="sub-kriteria-form">
 
-    <div class="sub-kriteria-form">
+    <?php $form = ActiveForm::begin(['id' => 'subkriteria-form']); ?>
 
-        <?= $this->render('_form', [
-            'model' => $model,
-            'total_sub_kriteria' => $total_sub_kriteria,
-            'total_bobot_kriteria' => $total_bobot_kriteria,
-        ]) ?>
+    <?= $form->field($model, 'deskripsi')->textInput(['maxlength' => true]) ?>
 
+    <?= $form->field($model, 'nilai')->textInput(['type' => 'number', 'min' => 1, 'max' => 20, 'id' => 'subkriteria-nilai']) ?>
+
+    <?= Html::hiddenInput('total-sub-kriteria', $total_sub_kriteria, ['id' => 'total-sub-kriteria']) ?>
+    <?= Html::hiddenInput('total-bobot-kriteria', $total_bobot_kriteria, ['id' => 'total-bobot-kriteria']) ?>
+
+    <div class="form-group">
+        <?= Html::submitButton('Simpan', ['class' => 'btn btn-success']) ?>
     </div>
+
+    <?php ActiveForm::end(); ?>
+
 </div>

@@ -15,7 +15,7 @@ class LoginController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['logout', 'home'],
                 'rules' => [
                     [
@@ -48,7 +48,7 @@ class LoginController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
             return $this->redirect(['home']);
         } else {
-            Yii::$app->session->setFlash('error', 'Username atau Password Salah');
+            Yii::$app->session->addFlash('error', 'Username atau Password Salah');
             return $this->redirect(['index']);
         }
     }

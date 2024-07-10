@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use Yii;
 use yii\db\ActiveRecord;
 
 class Hasil extends ActiveRecord
@@ -14,18 +15,17 @@ class Hasil extends ActiveRecord
     public function rules()
     {
         return [
-            [['id_alternatif', 'nilai'], 'required'],
+            [['id_alternatif', 'total_score'], 'required'],
             [['id_alternatif'], 'integer'],
-            [['nilai'], 'number'],
+            [['total_score'], 'number'],
         ];
     }
 
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'id_alternatif' => 'Alternatif',
-            'nilai' => 'Nilai',
+            'id_alternatif' => 'ID Alternatif',
+            'total_score' => 'Total Score',
         ];
     }
 

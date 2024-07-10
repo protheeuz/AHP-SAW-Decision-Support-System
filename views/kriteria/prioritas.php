@@ -3,11 +3,13 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
+/* @var $this yii\web\View */
+/* @var $kriteria array */
+
 $this->title = 'Prioritas Kriteria';
 $this->params['breadcrumbs'][] = ['label' => 'Data Kriteria', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-
 <div class="kriteria-prioritas">
 
     <h1><?= Html::encode($this->title) ?></h1>
@@ -16,7 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= Yii::$app->session->getFlash('error'); ?>
 
     <div class="alert alert-info">
-        Silahkan isi terlebih dahulu nilai kriteria menggunakan perbandingan berpasangan berdasarkan skala perbandingan 1-9, di mana 1 menunjukkan tidak penting dan 9 menunjukkan sangat penting, kemudian klik <b>SIMPAN</b>. Setelah itu klik <b>CEK KONSISTENSI</b> untuk melakukan pembobotan preferensi dengan menggunakan metode AHP.
+        Silahkan isi terlebih dahulu nilai kriteria menggunakan perbandingan berpasangan berdasarkan skala perbandingan 1-9, kemudian klik <b>SIMPAN</b>. Setelah itu klik <b>CEK KONSISTENSI</b> untuk melakukan pembobotan preferensi dengan menggunakan metode AHP.
     </div>
 
     <?php $form = ActiveForm::begin(['method' => 'post']); ?>
@@ -42,7 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <tr>
                                         <td class="text-right"><?= Html::encode($kriteria1->keterangan) ?></td>
                                         <td class="text-center">
-                                            <?= Html::dropDownList("comparison[{$kriteria1->id_kriteria}][{$kriteria2->id_kriteria}]", null, [
+                                            <?= Html::dropDownList("comparison[{$kriteria1->id}][{$kriteria2->id}]", null, [
                                                 '1' => '1',
                                                 '2' => '2',
                                                 '3' => '3',

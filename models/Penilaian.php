@@ -17,15 +17,30 @@ class Penilaian extends ActiveRecord
         return [
             [['id_alternatif', 'id_kriteria', 'nilai'], 'required'],
             [['id_alternatif', 'id_kriteria', 'nilai'], 'integer'],
+            [['id_kriteria'], 'exist', 'skipOnError' => true, 'targetClass' => Kriteria::class, 'targetAttribute' => ['id_kriteria' => 'id_kriteria']],
+            [['id_alternatif'], 'exist', 'skipOnError' => true, 'targetClass' => Alternatif::class, 'targetAttribute' => ['id_alternatif' => 'id_alternatif']],
         ];
     }
+
+
+    public function beforeSave($insert)
+    {
+        if (!parent::beforeSave($insert)) {
+            return false;
+        }
+
+        Yii::info('Before Saving Penilaian: ' . json_encode($this->attributes), __METHOD__);
+        return true;
+    }
+
+
 
     public function attributeLabels()
     {
         return [
-            'id_penilaian' => 'ID',
-            'id_alternatif' => 'Alternatif',
-            'id_kriteria' => 'Kriteria',
+            'id_penilaian' => 'ID Penilaian',
+            'id_alternatif' => 'ID Alternatif',
+            'id_kriteria' => 'ID Kriteria',
             'nilai' => 'Nilai',
         ];
     }

@@ -24,6 +24,7 @@ class KriteriaAhp extends ActiveRecord
     public function attributeLabels()
     {
         return [
+            'id' => 'ID',
             'id_kriteria_1' => 'Kriteria 1',
             'id_kriteria_2' => 'Kriteria 2',
             'nilai' => 'Nilai',

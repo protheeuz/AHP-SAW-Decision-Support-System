@@ -14,14 +14,12 @@ use app\models\User;
 // Buat pengguna admin baru
 $user = new User();
 $user->username = 'admin';
-$user->email = 'hq@matimatech.com';
-$user->nama = 'Matimatech';
+$user->email = 'hq@kemdikbud.go.id';
+$user->nama = 'HR Manager';
 $user->id_user_level = 1; // Sesuaikan dengan id_user_level untuk admin
-$user->password_hash = Yii::$app->security->generatePasswordHash('admin');
-$user->auth_key = Yii::$app->security->generateRandomString();
-$user->access_token = Yii::$app->security->generateRandomString();
-$user->created_at = time();
-$user->updated_at = time();
+$user->password_hash = Yii::$app->security->generatePasswordHash('kemdikbud');
+$user->created_at = date('Y-m-d H:i:s');
+$user->updated_at = date('Y-m-d H:i:s');
 
 if ($user->save()) {
     echo "Admin user created successfully!";

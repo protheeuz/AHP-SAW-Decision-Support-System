@@ -3,7 +3,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 $this->title = 'Edit Data Alternatif: ' . $model->nama;
-$this->params['breadcrumbs'][] = ['label' => 'Data Alternatif', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Data Karyawan', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->nama, 'url' => ['view', 'id' => $model->id_alternatif]];
 $this->params['breadcrumbs'][] = 'Edit';
 ?>

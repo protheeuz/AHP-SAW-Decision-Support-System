@@ -16,8 +16,8 @@ class m240617_075150_add_admin_user extends Migration
             'id_user_level' => 1, // Sesuaikan dengan id_user_level untuk admin
             'email' => 'hq@matimatech.com',
             'nama' => 'Matimatech',
-            'username' => 'admin',
-            'password_hash' => Yii::$app->security->generatePasswordHash('admin'), // Menggunakan password_hash
+            'username' => 'tigor',
+            'password_hash' => Yii::$app->security->generatePasswordHash('tigor123'), // Menggunakan password_hash
             'auth_key' => Yii::$app->security->generateRandomString(), // Menghasilkan auth_key acak
             'access_token' => Yii::$app->security->generateRandomString(), // Menghasilkan access_token acak
             'created_at' => time(), // Timestamp untuk waktu pembuatan

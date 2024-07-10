@@ -4,18 +4,22 @@ namespace app\controllers;
 
 use Yii;
 use yii\web\Controller;
-use app\models\Perhitungan;
-use app\models\Hasil;
+use app\models\Alternatif;
+use app\models\Kriteria;
+use app\models\Penilaian;
 use yii\data\ActiveDataProvider;
 
 class PerhitunganController extends Controller
 {
-    public $layout = 'main_admin'; // Menambahkan layout
-    
+    public $layout = 'main_admin';
+
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => Perhitungan::find(),
+            'query' => Penilaian::find(),
+            'pagination' => [
+                'pageSize' => 10,
+            ],
         ]);
 
         return $this->render('index', [
@@ -25,22 +29,43 @@ class PerhitunganController extends Controller
 
     public function actionHasil()
     {
-        $hasil = Hasil::find()->with('alternatif')->all();
+        $alternatif = Alternatif::find()->all();
+        $kriteria = Kriteria::find()->all();
+        $penilaian = Penilaian::find()->all();
+
+        $scores = $this->calculateScores($alternatif, $kriteria, $penilaian);
 
         return $this->render('hasil', [
-            'hasil' => $hasil,
+            'scores' => $scores,
         ]);
     }
 
-    public function actionCetakLaporanHasil()
+    private function calculateScores($alternatif, $kriteria, $penilaian)
     {
-        $hasil = Hasil::find()->with('alternatif')->all();
+        $scores = [];
 
-        $pdf = new \Mpdf\Mpdf();
-        $pdf->WriteHTML($this->renderPartial('laporan_hasil', [
-            'hasil' => $hasil,
-        ]));
-        $pdf->Output('Laporan_Hasil.pdf', 'D');
-        exit;
+        foreach ($alternatif as $alt) {
+            $totalScore = 0;
+            foreach ($kriteria as $krit) {
+                $nilai = 0;
+                foreach ($penilaian as $pen) {
+                    if ($pen->id_alternatif == $alt->id_alternatif && $pen->id_kriteria == $krit->id_kriteria) {
+                        $nilai = $pen->nilai;
+                        break;
+                    }
+                }
+                $totalScore += $nilai * ($krit->bobot / 100);
+            }
+            $scores[] = [
+                'nama' => $alt->nama,
+                'total_score' => $totalScore,
+            ];
+        }
+
+        usort($scores, function ($a, $b) {
+            return $b['total_score'] <=> $a['total_score'];
+        });
+
+        return $scores;
     }
 }

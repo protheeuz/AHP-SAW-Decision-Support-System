@@ -2,36 +2,25 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-$this->title = 'Input Penilaian';
-$this->params['breadcrumbs'][] = ['label' => 'Data Penilaian', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div class="penilaian-create">
+<div class="penilaian-form">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <?php $form = ActiveForm::begin(['id' => 'penilaian-form']); ?>
 
-    <?= Yii::$app->session->getFlash('success'); ?>
-
-    <div class="penilaian-form">
-
-        <?php $form = ActiveForm::begin(); ?>
-
-        <?= $form->field($model, 'id_alternatif')->hiddenInput(['value' => $id_alternatif])->label(false) ?>
-        
-        <?php foreach ($kriteria as $kriteriaItem): ?>
-            <div class="form-group">
-                <label for="nilai"><?= Html::encode($kriteriaItem->keterangan) ?> (<?= Html::encode($kriteriaItem->kode_kriteria) ?>)</label>
-                <?= Html::input('number', 'Penilaian[' . $kriteriaItem->id_kriteria . ']', '', ['class' => 'form-control', 'min' => 1, 'max' => 20, 'required' => true]) ?>
-            </div>
-        <?php endforeach; ?>
-
+    <?= $form->field($model, 'id_alternatif')->hiddenInput(['value' => $id_alternatif])->label(false) ?>
+    
+    <?php foreach ($kriteria as $kriteriaItem): ?>
         <div class="form-group">
-            <?= Html::submitButton('Simpan', ['class' => 'btn btn-success']) ?>
+            <label for="nilai"><?= Html::encode($kriteriaItem->keterangan) ?> (<?= Html::encode($kriteriaItem->kode_kriteria) ?>)</label>
+            <?= Html::input('number', 'Penilaian[' . $kriteriaItem->id_kriteria . ']', '', ['class' => 'form-control', 'min' => 1, 'max' => 20, 'required' => true]) ?>
         </div>
+    <?php endforeach; ?>
 
-        <?php ActiveForm::end(); ?>
-
+    <div class="form-group">
+        <?= Html::submitButton('Simpan', ['class' => 'btn btn-success']) ?>
     </div>
+
+    <?php ActiveForm::end(); ?>
 
 </div>

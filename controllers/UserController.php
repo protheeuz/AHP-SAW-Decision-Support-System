@@ -9,7 +9,8 @@ use yii\data\ActiveDataProvider;
 
 class UserController extends Controller
 {
-    public $layout = 'main_admin'; // Menambahkan layout
+    public $layout = 'main_admin';
+
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
@@ -26,9 +27,12 @@ class UserController extends Controller
         $model = new User();
         $userLevels = UserLevel::find()->all();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', 'Data berhasil disimpan!');
-            return $this->redirect(['index']);
+        if ($model->load(Yii::$app->request->post())) {
+            $model->password = Yii::$app->security->generatePasswordHash($model->password);
+            if ($model->save()) {
+                Yii::$app->session->addFlash('success', 'Data berhasil disimpan!');
+                return $this->redirect(['index']);
+            }
         }
 
         return $this->render('create', [
@@ -42,9 +46,17 @@ class UserController extends Controller
         $model = User::findOne($id);
         $userLevels = UserLevel::find()->all();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', 'Data berhasil diupdate!');
-            return $this->redirect(['index']);
+        if ($model->load(Yii::$app->request->post())) {
+            if (!empty($model->password)) {
+                $model->password = Yii::$app->security->generatePasswordHash($model->password);
+            } else {
+                $model->password = $model->getOldAttribute('password');
+            }
+
+            if ($model->save()) {
+                Yii::$app->session->addFlash('success', 'Data berhasil diupdate!');
+                return $this->redirect(['index']);
+            }
         }
 
         return $this->render('update', [
@@ -56,7 +68,7 @@ class UserController extends Controller
     public function actionDelete($id)
     {
         User::findOne($id)->delete();
-        Yii::$app->session->setFlash('success', 'Data berhasil dihapus!');
+        Yii::$app->session->addFlash('success', 'Data berhasil dihapus!');
         return $this->redirect(['index']);
     }
 

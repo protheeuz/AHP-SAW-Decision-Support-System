@@ -16,9 +16,9 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['id_user_level', 'email', 'nama', 'username', 'password_hash'], 'required'],
+            [['id_user_level', 'email', 'nama', 'username', 'password'], 'required'],
             [['id_user_level'], 'integer'],
-            [['email', 'nama', 'username', 'password_hash', 'auth_key', 'access_token'], 'string', 'max' => 255],
+            [['email', 'nama', 'username', 'password'], 'string', 'max' => 255],
             [['email'], 'email'],
             [['username'], 'unique'],
             [['email'], 'unique'],
@@ -32,9 +32,7 @@ class User extends ActiveRecord implements IdentityInterface
             'email' => 'Email',
             'nama' => 'Name',
             'username' => 'Username',
-            'password_hash' => 'Password Hash',
-            'auth_key' => 'Auth Key',
-            'access_token' => 'Access Token',
+            'password' => 'Password',
         ];
     }
 
@@ -45,8 +43,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function validatePassword($password)
     {
-        // Assuming passwords are stored hashed
-        return Yii::$app->security->validatePassword($password, $this->password_hash);
+        return Yii::$app->security->validatePassword($password, $this->password);
     }
 
     public static function findIdentity($id)
@@ -56,7 +53,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        return static::findOne(['access_token' => $token]);
+        return null;
     }
 
     public function getId()
@@ -66,12 +63,12 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function getAuthKey()
     {
-        return $this->auth_key;
+        return null;
     }
 
     public function validateAuthKey($authKey)
     {
-        return $this->auth_key === $authKey;
+        return false;
     }
 
     public static function getUsers()
@@ -88,6 +85,8 @@ class User extends ActiveRecord implements IdentityInterface
     {
         $model = new self();
         $model->attributes = $data;
+        // Set password hash saat pembuatan user baru
+        $model->password = Yii::$app->security->generatePasswordHash($model->password);
         return $model->save();
     }
 
@@ -101,6 +100,10 @@ class User extends ActiveRecord implements IdentityInterface
         $model = self::findOne($id_user);
         if ($model) {
             $model->attributes = $data;
+            // Set password hash jika password diubah
+            if (!empty($data['password'])) {
+                $model->password = Yii::$app->security->generatePasswordHash($data['password']);
+            }
             return $model->save();
         }
         return false;
@@ -108,7 +111,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     public static function deleteUser($id_user)
     {
-        return self::deleteAll(['id_user' => $id_user]);
+        return self::deleteAll(['id' => $id_user]);
     }
 
     public static function getUserLevels()

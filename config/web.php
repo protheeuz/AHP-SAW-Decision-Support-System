@@ -49,7 +49,7 @@ $config = [
             'rules' => [
                 '' => 'site/index',
                 '<controller:\w+>/<action:\w+>/' => '<controller>/<action>',
-                'admin' => 'admin/index', // Add this rule
+                // 'admin' => 'admin/index',
             ],
         ],
     ],

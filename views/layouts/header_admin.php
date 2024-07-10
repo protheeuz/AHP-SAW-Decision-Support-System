@@ -77,7 +77,7 @@ use yii\helpers\Html;
             <li class="nav-item">
                 <a class="nav-link" href="<?= Url::to(['alternatif/index']) ?>">
                     <i class="fas fa-fw fa-users"></i>
-                    <span>Data Alternatif</span></a>
+                    <span>Data Karyawan</span></a>
             </li>
 
             <!-- Nav Item - Data Penilaian -->
