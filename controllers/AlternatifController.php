@@ -6,6 +6,7 @@ use Yii;
 use yii\web\Controller;
 use app\models\Alternatif;
 use yii\data\ActiveDataProvider;
+use yii\web\NotFoundHttpException;
 
 class AlternatifController extends Controller
 {
@@ -49,6 +50,22 @@ class AlternatifController extends Controller
             'model' => $model,
         ]);
     }
+    public function actionView($id)
+    {
+        return $this->render('view', [
+            'model' => $this->findModel($id),
+        ]);
+    }
+
+    protected function findModel($id)
+    {
+        if (($model = Alternatif::findOne($id)) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
 
     public function actionDelete($id)
     {

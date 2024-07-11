@@ -62,4 +62,3 @@ $(function () {
 </body>
 
 </html>
-<?php $this->endPage() ?>

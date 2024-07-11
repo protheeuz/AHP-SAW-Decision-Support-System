@@ -53,14 +53,10 @@ class SiteController extends Controller
         if (Yii::$app->user->isGuest) {
             return $this->redirect(['site/login']);
         } else {
-            $user = User::findOne(Yii::$app->user->id);
-            if ($user->id_user_level == 1) {
-                return $this->redirect(['admin/index']);
-            } else {
-                return $this->redirect(['user/index']);
-            }
+            return $this->render('index'); // Ganti dengan halaman utama Anda setelah login
         }
     }
+
 
     public function actionLogin()
     {

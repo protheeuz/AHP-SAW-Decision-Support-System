@@ -49,7 +49,9 @@ $config = [
             'rules' => [
                 '' => 'site/index',
                 '<controller:\w+>/<action:\w+>/' => '<controller>/<action>',
-                // 'admin' => 'admin/index',
+                'kriteria/view/<id_kriteria:\d+>' => 'kriteria/view',
+                'kriteria/update/<id_kriteria:\d+>' => 'kriteria/update',
+                'admin' => 'admin/index',
             ],
         ],
     ],

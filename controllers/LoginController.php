@@ -7,7 +7,6 @@ use yii\web\Controller;
 use app\models\LoginForm;
 use app\models\User;
 use yii\filters\AccessControl;
-use yii\web\NotFoundHttpException;
 
 class LoginController extends Controller
 {

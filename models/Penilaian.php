@@ -22,19 +22,6 @@ class Penilaian extends ActiveRecord
         ];
     }
 
-
-    public function beforeSave($insert)
-    {
-        if (!parent::beforeSave($insert)) {
-            return false;
-        }
-
-        Yii::info('Before Saving Penilaian: ' . json_encode($this->attributes), __METHOD__);
-        return true;
-    }
-
-
-
     public function attributeLabels()
     {
         return [
