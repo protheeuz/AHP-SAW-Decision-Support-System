@@ -37,11 +37,13 @@ $(document).on('beforeSubmit', '#penilaian-form', function (e) {
         success: function (response) {
             if (response.success) {
                 $('#modal').modal('hide');
-                $.pjax.reload({container: '#dataTable'});
-                alert(response.message);
+                $.pjax.reload({container: '#penilaian-container'});
             } else {
                 alert(response.message);
             }
+        },
+        error: function () {
+            alert('Terjadi kesalahan saat menyimpan data.');
         }
     });
     return false;

@@ -26,7 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <thead class="bg-primary text-white">
                         <tr align="center">
                             <th width="5%">No</th>
-                            <th>Alternatif</th>
+                            <th>Nama Karyawan</th>
                             <th width="15%">Aksi</th>
                         </tr>
                     </thead>
@@ -91,13 +91,16 @@ $(function () {
             type: 'POST',
             data: form.serialize(),
             success: function (response) {
+                console.log(response); // Tambahkan log ini untuk melihat respon dari server
                 if (response.success) {
                     $('#modal').modal('hide');
                     location.reload(); // Reload halaman untuk memperbarui data
-                    alert(response.message);
                 } else {
                     alert(response.message);
                 }
+            },
+            error: function () {
+                alert('Terjadi kesalahan saat menyimpan data.');
             }
         });
         return false;
@@ -105,4 +108,4 @@ $(function () {
 });
 JS;
 $this->registerJs($script);
-?>
+?>A

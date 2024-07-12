@@ -30,7 +30,7 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             'id_user_level' => 'User Level',
             'email' => 'Email',
-            'nama' => 'Name',
+            'nama' => 'Nama',
             'username' => 'Username',
             'password' => 'Password',
         ];
@@ -108,7 +108,10 @@ class User extends ActiveRecord implements IdentityInterface
         }
         return false;
     }
-
+    public function getUserLevel()
+    {
+        return $this->hasOne(UserLevel::class, ['id' => 'id_user_level']);
+    }
     public static function deleteUser($id_user)
     {
         return self::deleteAll(['id' => $id_user]);

@@ -36,9 +36,21 @@ class Penilaian extends ActiveRecord
     {
         return [
             'id_penilaian' => 'ID Penilaian',
-            'id_alternatif' => 'ID Alternatif',
-            'id_kriteria' => 'ID Kriteria',
+            'id_alternatif' => 'Nama Karyawan',
+            'id_kriteria' => 'Kriteria',
             'nilai' => 'Nilai',
         ];
+    }
+
+    // Menambahkan relasi ke model Alternatif
+    public function getAlternatif()
+    {
+        return $this->hasOne(Alternatif::class, ['id_alternatif' => 'id_alternatif']);
+    }
+
+    // Menambahkan relasi ke model Kriteria
+    public function getKriteria()
+    {
+        return $this->hasOne(Kriteria::class, ['id_kriteria' => 'id_kriteria']);
     }
 }

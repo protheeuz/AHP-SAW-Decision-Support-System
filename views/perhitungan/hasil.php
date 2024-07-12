@@ -1,4 +1,5 @@
 <?php
+
 use yii\helpers\Html;
 
 $this->title = 'Hasil Perangkingan';
@@ -18,19 +19,21 @@ $this->params['breadcrumbs'][] = $this->title;
                 <table class="table table-bordered" width="100%" cellspacing="0">
                     <thead class="bg-primary text-white">
                         <tr align="center">
-                            <th>Rank</th>
-                            <th>Alternatif</th>
+                            <th>Ranking</th>
+                            <th>Nama Karyawan</th>
                             <th>Total Skor</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php $rank = 1; foreach ($scores as $score): ?>
-                        <tr align="center">
-                            <td><?= $rank ?></td>
-                            <td align="left"><?= $score['nama'] ?></td>
-                            <td><?= $score['total_score'] ?></td>
-                        </tr>
-                        <?php $rank++; endforeach; ?>
+                        <?php $rank = 1;
+                        foreach ($scores as $score) : ?>
+                            <tr align="center">
+                                <td><?= $rank ?></td>
+                                <td align="left"><?= $score['nama'] ?></td>
+                                <td><?= $score['total_score'] ?></td>
+                            </tr>
+                        <?php $rank++;
+                        endforeach; ?>
                     </tbody>
                 </table>
             </div>

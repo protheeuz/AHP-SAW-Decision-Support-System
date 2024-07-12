@@ -1,4 +1,5 @@
 <?php
+
 use yii\helpers\Html;
 use yii\grid\GridView;
 
@@ -32,11 +33,11 @@ $this->params['breadcrumbs'][] = $this->title;
                         'username',
                         [
                             'attribute' => 'userLevel.user_level',
-                            'label' => 'Level'
+                            'label' => 'Level',
                         ],
                         [
                             'class' => 'yii\grid\ActionColumn',
-                            'template' => '{view} {update} {delete}',
+                            'template' => ' {view} {update} {delete}', // {view}
                             'buttons' => [
                                 'view' => function ($url, $model) {
                                     return Html::a('<i class="fa fa-eye"></i>', $url, [
