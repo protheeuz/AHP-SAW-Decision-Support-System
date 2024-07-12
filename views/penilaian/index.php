@@ -45,9 +45,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                             'class' => 'btn btn-success btn-sm modalButton',
                                         ]);
                                     } else {
-                                        echo Html::a('<i class="fa fa-eye"></i> View', ['view', 'id' => $keys->id_alternatif], [
-                                            'class' => 'btn btn-info btn-sm',
-                                        ]);
                                         echo Html::button('<i class="fa fa-edit"></i> Edit', [
                                             'value' => Url::to(['penilaian/update', 'id' => $keys->id_alternatif]),
                                             'class' => 'btn btn-warning btn-sm modalButton',
@@ -84,6 +81,26 @@ $(function () {
         $('#modal').modal('show')
             .find('#modalContent')
             .load($(this).attr('value'));
+    });
+
+    $(document).on('beforeSubmit', '#penilaian-form', function (e) {
+        e.preventDefault();
+        var form = $(this);
+        $.ajax({
+            url: form.attr('action'),
+            type: 'POST',
+            data: form.serialize(),
+            success: function (response) {
+                if (response.success) {
+                    $('#modal').modal('hide');
+                    location.reload(); // Reload halaman untuk memperbarui data
+                    alert(response.message);
+                } else {
+                    alert(response.message);
+                }
+            }
+        });
+        return false;
     });
 });
 JS;

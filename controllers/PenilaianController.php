@@ -7,7 +7,6 @@ use yii\web\Controller;
 use app\models\Penilaian;
 use app\models\Alternatif;
 use app\models\Kriteria;
-use yii\web\NotFoundHttpException;
 
 class PenilaianController extends Controller
 {
@@ -26,20 +25,19 @@ class PenilaianController extends Controller
         $kriteria = Kriteria::find()->all();
         $id_alternatif = $id;
 
-        if (Yii::$app->request->post()) {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
             $postData = Yii::$app->request->post('Penilaian');
             foreach ($postData as $id_kriteria => $nilai) {
                 $penilaian = new Penilaian();
                 $penilaian->id_alternatif = $id_alternatif;
-                $penilaian->id_kriteria = $id_kriteria;
-                $penilaian->nilai = $nilai;
+                $penilaian->id_kriteria = (int)$id_kriteria;
+                $penilaian->nilai = (int)$nilai;
                 if (!$penilaian->save()) {
-                    Yii::$app->session->setFlash('error', 'Gagal menyimpan data penilaian.');
-                    return $this->redirect(['index']);
+                    return ['success' => false, 'message' => 'Gagal menyimpan data penilaian: ' . json_encode($penilaian->errors)];
                 }
             }
-            Yii::$app->session->setFlash('success', 'Data penilaian berhasil disimpan.');
-            return $this->redirect(['index']);
+            return ['success' => true, 'message' => 'Data penilaian berhasil disimpan.'];
         }
 
         return $this->renderAjax('create', [
@@ -54,21 +52,21 @@ class PenilaianController extends Controller
         $penilaian = Penilaian::find()->where(['id_alternatif' => $id])->all();
         $id_alternatif = $id;
 
-        if (Yii::$app->request->post()) {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
             Penilaian::deleteAll(['id_alternatif' => $id_alternatif]);
+
             $postData = Yii::$app->request->post('Penilaian');
             foreach ($postData as $id_kriteria => $nilai) {
                 $penilaian = new Penilaian();
                 $penilaian->id_alternatif = $id_alternatif;
-                $penilaian->id_kriteria = $id_kriteria;
-                $penilaian->nilai = $nilai;
+                $penilaian->id_kriteria = (int)$id_kriteria;
+                $penilaian->nilai = (int)$nilai;
                 if (!$penilaian->save()) {
-                    Yii::$app->session->setFlash('error', 'Gagal mengupdate data penilaian.');
-                    return $this->redirect(['index']);
+                    return ['success' => false, 'message' => 'Gagal menyimpan data penilaian: ' . json_encode($penilaian->errors)];
                 }
             }
-            Yii::$app->session->setFlash('success', 'Data penilaian berhasil diupdate.');
-            return $this->redirect(['index']);
+            return ['success' => true, 'message' => 'Data penilaian berhasil diupdate.'];
         }
 
         return $this->renderAjax('update', [
@@ -76,14 +74,5 @@ class PenilaianController extends Controller
             'penilaian' => $penilaian,
             'id_alternatif' => $id_alternatif,
         ]);
-    }
-
-    protected function findModel($id)
-    {
-        if (($model = Alternatif::findOne($id)) !== null) {
-            return $model;
-        }
-
-        throw new NotFoundHttpException('The requested page does not exist.');
     }
 }

@@ -8,7 +8,7 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(['id' => 'penilaian-form']); ?>
 
-    <?= $form->field($model, 'id_alternatif')->hiddenInput(['value' => $id_alternatif])->label(false) ?>
+    <?= Html::hiddenInput('id_alternatif', $id_alternatif) ?>
     
     <?php foreach ($kriteria as $kriteriaItem): ?>
         <div class="form-group">
@@ -24,3 +24,28 @@ use yii\widgets\ActiveForm;
     <?php ActiveForm::end(); ?>
 
 </div>
+
+<?php
+$script = <<< JS
+$(document).on('beforeSubmit', '#penilaian-form', function (e) {
+    e.preventDefault();
+    var form = $(this);
+    $.ajax({
+        url: form.attr('action'),
+        type: 'POST',
+        data: form.serialize(),
+        success: function (response) {
+            if (response.success) {
+                $('#modal').modal('hide');
+                $.pjax.reload({container: '#dataTable'});
+                alert(response.message);
+            } else {
+                alert(response.message);
+            }
+        }
+    });
+    return false;
+});
+JS;
+$this->registerJs($script);
+?>
