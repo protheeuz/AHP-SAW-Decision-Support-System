@@ -11,7 +11,15 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <?= Yii::$app->session->getFlash('success'); ?>
+    <?php foreach (Yii::$app->session->getAllFlashes() as $key => $message): ?>
+        <?php if (is_array($message)) {
+            foreach ($message as $msg) {
+                echo '<div class="alert alert-' . $key . '">' . $msg . '</div>';
+            }
+        } else {
+            echo '<div class="alert alert-' . $key . '">' . $message . '</div>';
+        } ?>
+    <?php endforeach; ?>
 
     <p>
         <?= Html::a('<i class="fa fa-plus"></i> Tambah Data', ['create'], ['class' => 'btn btn-success']) ?>
@@ -33,11 +41,11 @@ $this->params['breadcrumbs'][] = $this->title;
                         'username',
                         [
                             'attribute' => 'userLevel.user_level',
-                            'label' => 'Level',
+                            'label' => 'Level'
                         ],
                         [
                             'class' => 'yii\grid\ActionColumn',
-                            'template' => ' {view} {update} {delete}', // {view}
+                            'template' => '{view} {update} {delete}',
                             'buttons' => [
                                 'view' => function ($url, $model) {
                                     return Html::a('<i class="fa fa-eye"></i>', $url, [

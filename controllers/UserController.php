@@ -1,4 +1,5 @@
 <?php
+
 namespace app\controllers;
 
 use Yii;
@@ -21,7 +22,6 @@ class UserController extends Controller
             'dataProvider' => $dataProvider,
         ]);
     }
-
     public function actionCreate()
     {
         $model = new User();
@@ -32,6 +32,8 @@ class UserController extends Controller
             if ($model->save()) {
                 Yii::$app->session->addFlash('success', 'Data berhasil disimpan!');
                 return $this->redirect(['index']);
+            } else {
+                Yii::$app->session->addFlash('error', 'Gagal menyimpan data.');
             }
         }
 

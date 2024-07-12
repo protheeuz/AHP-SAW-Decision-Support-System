@@ -108,4 +108,4 @@ $(function () {
 });
 JS;
 $this->registerJs($script);
-?>A
+?>
