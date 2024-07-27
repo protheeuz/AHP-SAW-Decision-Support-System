@@ -1,6 +1,7 @@
 <?php
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\widgets\LinkPager;
 
 $this->title = 'Data Karyawan';
 $this->params['breadcrumbs'][] = $this->title;
@@ -18,6 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
+        'layout' => "{items}\n{summary}\n{pager}",
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
@@ -50,5 +52,28 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
             ],
         ],
+        'pager' => [
+            'class' => LinkPager::class,
+            'options' => ['class' => 'pagination justify-content-center'], // styling pagination
+            'linkOptions' => ['class' => 'page-link'],
+            'disabledListItemSubTagOptions' => ['class' => 'page-link'],
+            'prevPageLabel' => '&laquo;',
+            'nextPageLabel' => '&raquo;',
+        ],
     ]); ?>
 </div>
+
+<style>
+    .pagination > .active > a,
+    .pagination > .active > span,
+    .pagination > .active > a:hover,
+    .pagination > .active > span:hover,
+    .pagination > .active > a:focus,
+    .pagination > .active > span:focus {
+        z-index: 3;
+        color: #fff;
+        background-color: #007bff;
+        border-color: #007bff;
+        cursor: default;
+    }
+</style>

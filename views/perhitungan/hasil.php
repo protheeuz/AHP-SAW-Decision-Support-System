@@ -40,13 +40,23 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 
-    <!-- Menambahkan grafik -->
+    <!-- Menambahkan grafik bar -->
     <div class="card shadow mb-4 mt-4">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary"><i class="fa fa-chart-bar"></i> Grafik Hasil Perangkingan</h6>
         </div>
         <div class="card-body">
-            <canvas id="rankingChart"></canvas>
+            <canvas id="rankingBarChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Menambahkan grafik line -->
+    <div class="card shadow mb-4 mt-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary"><i class="fa fa-chart-line"></i> Grafik Hasil Perangkingan (Line)</h6>
+        </div>
+        <div class="card-body">
+            <canvas id="rankingLineChart"></canvas>
         </div>
     </div>
 </div>
@@ -55,14 +65,16 @@ $this->params['breadcrumbs'][] = $this->title;
 // Mengambil data untuk grafik
 $names = json_encode(array_column($scores, 'nama'));
 $scores = json_encode(array_column($scores, 'total_score'));
-$script = <<<JS
-var ctx = document.getElementById('rankingChart').getContext('2d');
-var rankingChart = new Chart(ctx, {
+
+// Script untuk grafik bar
+$scriptBar = <<<JS
+var ctxBar = document.getElementById('rankingBarChart').getContext('2d');
+var rankingBarChart = new Chart(ctxBar, {
     type: 'bar',
     data: {
         labels: $names,
         datasets: [{
-            label: 'Total Skor',
+            label: 'Grafik Hasil Skor tiap Karyawan (bar)',
             data: $scores,
             backgroundColor: 'rgba(54, 162, 235, 0.6)',
             borderColor: 'rgba(54, 162, 235, 1)',
@@ -78,5 +90,33 @@ var rankingChart = new Chart(ctx, {
     }
 });
 JS;
-$this->registerJs($script, \yii\web\View::POS_END);
+$this->registerJs($scriptBar, \yii\web\View::POS_END);
+
+// Script untuk grafik line
+$scriptLine = <<<JS
+var ctxLine = document.getElementById('rankingLineChart').getContext('2d');
+var rankingLineChart = new Chart(ctxLine, {
+    type: 'line',
+    data: {
+        labels: $names,
+        datasets: [{
+            label: 'Grafik Hasil Skor tiap Karyawan (line)',
+            data: $scores,
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1,
+            fill: true
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+JS;
+$this->registerJs($scriptLine, \yii\web\View::POS_END);
 ?>

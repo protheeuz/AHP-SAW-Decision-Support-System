@@ -39,16 +39,18 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <td>
                                     <?php
                                     $cek_tombol = Penilaian::find()->where(['id_alternatif' => $keys->id_alternatif])->count();
-                                    if ($cek_tombol == 0) {
-                                        echo Html::button('<i class="fa fa-plus"></i> Input', [
-                                            'value' => Url::to(['penilaian/create', 'id' => $keys->id_alternatif]),
-                                            'class' => 'btn btn-success btn-sm modalButton',
-                                        ]);
-                                    } else {
-                                        echo Html::button('<i class="fa fa-edit"></i> Edit', [
-                                            'value' => Url::to(['penilaian/update', 'id' => $keys->id_alternatif]),
-                                            'class' => 'btn btn-warning btn-sm modalButton',
-                                        ]);
+                                    if (Yii::$app->user->identity->id_user_level != 3) { // Hanya tampilkan tombol untuk selain Karyawan
+                                        if ($cek_tombol == 0) {
+                                            echo Html::button('<i class="fa fa-plus"></i> Input', [
+                                                'value' => Url::to(['penilaian/create', 'id' => $keys->id_alternatif]),
+                                                'class' => 'btn btn-success btn-sm modalButton',
+                                            ]);
+                                        } else {
+                                            echo Html::button('<i class="fa fa-edit"></i> Edit', [
+                                                'value' => Url::to(['penilaian/update', 'id' => $keys->id_alternatif]),
+                                                'class' => 'btn btn-warning btn-sm modalButton',
+                                            ]);
+                                        }
                                     }
                                     ?>
                                 </td>

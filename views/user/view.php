@@ -12,24 +12,26 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
+        <?= Html::a('Update', ['update', 'id' => $model->id_user], ['class' => 'btn btn-primary']) ?>
+        <?php if (Yii::$app->user->identity->id_user_level == 1): ?>
+            <?= Html::a('Delete', ['delete', 'id' => $model->id_user], [
+                'class' => 'btn btn-danger',
+                'data' => [
+                    'confirm' => 'Are you sure you want to delete this item?',
+                    'method' => 'post',
+                ],
+            ]) ?>
+        <?php endif; ?>
     </p>
 
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'id',
+            'id_user',
             'nama',
             'email:email',
             'username',
-            'password', // For security reasons, you might not want to display the password hash
+            //'password', // For security reasons, you might not want to display the password hash
             [
                 'attribute' => 'id_user_level',
                 'value' => $model->userLevel->user_level,

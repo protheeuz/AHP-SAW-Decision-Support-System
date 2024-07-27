@@ -1,5 +1,4 @@
 <?php
-
 namespace app\models;
 
 use yii\db\ActiveRecord;
@@ -11,6 +10,11 @@ class User extends ActiveRecord implements IdentityInterface
     public static function tableName()
     {
         return 'user';
+    }
+
+    public static function primaryKey()
+    {
+        return ['id_user'];
     }
 
     public function rules()
@@ -108,17 +112,14 @@ class User extends ActiveRecord implements IdentityInterface
         }
         return false;
     }
+
+    public static function deleteUser($id_user)
+    {
+        return self::deleteAll(['id_user' => $id_user]);
+    }
+
     public function getUserLevel()
     {
         return $this->hasOne(UserLevel::class, ['id' => 'id_user_level']);
-    }
-    public static function deleteUser($id_user)
-    {
-        return self::deleteAll(['id' => $id_user]);
-    }
-
-    public static function getUserLevels()
-    {
-        return UserLevel::find()->all();
     }
 }

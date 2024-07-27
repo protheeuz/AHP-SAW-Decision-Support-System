@@ -22,6 +22,11 @@ class PenilaianController extends Controller
 
     public function actionCreate($id)
     {
+        if (Yii::$app->user->identity->id_user_level == 3) { // Jika user adalah Karyawan
+            Yii::$app->session->addFlash('error', 'Anda tidak memiliki akses untuk menambah penilaian.');
+            return $this->redirect(['index']);
+        }
+
         $kriteria = Kriteria::find()->all();
         $id_alternatif = $id;
 
@@ -48,6 +53,11 @@ class PenilaianController extends Controller
 
     public function actionUpdate($id)
     {
+        if (Yii::$app->user->identity->id_user_level == 3) { // Jika user adalah Karyawan
+            Yii::$app->session->addFlash('error', 'Anda tidak memiliki akses untuk mengedit penilaian.');
+            return $this->redirect(['index']);
+        }
+
         $kriteria = Kriteria::find()->all();
         $penilaian = Penilaian::find()->where(['id_alternatif' => $id])->all();
         $id_alternatif = $id;

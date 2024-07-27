@@ -42,64 +42,70 @@ AppAsset::register($this);
 
             <hr class="sidebar-divider">
 
-            <div class="sidebar-heading">
-                Master Data
-            </div>
+            <?php if (Yii::$app->user->identity->id_user_level == 1 || Yii::$app->user->identity->id_user_level == 2): // Admin atau Kepala Bagian ?>
+                <div class="sidebar-heading">
+                    Master Data
+                </div>
 
-            <li class="nav-item">
-                <a class="nav-link" href="<?= Url::to(['kriteria/index']) ?>">
-                    <i class="fas fa-fw fa-cube"></i>
-                    <span>Data Kriteria</span>
-                </a>
-            </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="<?= Url::to(['kriteria/index']) ?>">
+                        <i class="fas fa-fw fa-cube"></i>
+                        <span>Data Kriteria</span>
+                    </a>
+                </li>
 
-            <li class="nav-item">
-                <a class="nav-link" href="<?= Url::to(['sub-kriteria/index']) ?>">
-                    <i class="fas fa-fw fa-cubes"></i>
-                    <span>Data Sub Kriteria</span>
-                </a>
-            </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="<?= Url::to(['sub-kriteria/index']) ?>">
+                        <i class="fas fa-fw fa-cubes"></i>
+                        <span>Data Sub Kriteria</span>
+                    </a>
+                </li>
 
-            <li class="nav-item">
-                <a class="nav-link" href="<?= Url::to(['alternatif/index']) ?>">
-                    <i class="fas fa-fw fa-users"></i>
-                    <span>Data Karyawan</span>
-                </a>
-            </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="<?= Url::to(['alternatif/index']) ?>">
+                        <i class="fas fa-fw fa-users"></i>
+                        <span>Data Karyawan</span>
+                    </a>
+                </li>
+            <?php endif; ?>
 
-            <li class="nav-item">
-                <a class="nav-link" href="<?= Url::to(['penilaian/index']) ?>">
-                    <i class="fas fa-fw fa-edit"></i>
-                    <span>Data Penilaian</span>
-                </a>
-            </li>
+            <?php if (Yii::$app->user->identity->id_user_level == 1 || Yii::$app->user->identity->id_user_level == 3): // Admin atau Karyawan ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="<?= Url::to(['penilaian/index']) ?>">
+                        <i class="fas fa-fw fa-edit"></i>
+                        <span>Data Penilaian</span>
+                    </a>
+                </li>
 
-            <li class="nav-item">
-                <a class="nav-link" href="<?= Url::to(['perhitungan/index']) ?>">
-                    <i class="fas fa-fw fa-calculator"></i>
-                    <span>Data Perhitungan</span>
-                </a>
-            </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="<?= Url::to(['perhitungan/index']) ?>">
+                        <i class="fas fa-fw fa-calculator"></i>
+                        <span>Data Perhitungan</span>
+                    </a>
+                </li>
 
-            <li class="nav-item">
-                <a class="nav-link" href="<?= Url::to(['perhitungan/hasil']) ?>">
-                    <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Hasil Perankingan</span>
-                </a>
-            </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="<?= Url::to(['perhitungan/hasil']) ?>">
+                        <i class="fas fa-fw fa-chart-area"></i>
+                        <span>Hasil Perankingan</span>
+                    </a>
+                </li>
+            <?php endif; ?>
 
-            <hr class="sidebar-divider">
+            <?php if (Yii::$app->user->identity->id_user_level == 1 || Yii::$app->user->identity->id_user_level == 2): // Admin atau Kepala Bagian ?>
+                <hr class="sidebar-divider">
 
-            <div class="sidebar-heading">
-                Master User
-            </div>
+                <div class="sidebar-heading">
+                    Master User
+                </div>
 
-            <li class="nav-item">
-                <a class="nav-link" href="<?= Url::to(['user/index']) ?>">
-                    <i class="fas fa-fw fa-users-cog"></i>
-                    <span>Data User</span>
-                </a>
-            </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="<?= Url::to(['user/index']) ?>">
+                        <i class="fas fa-fw fa-users-cog"></i>
+                        <span>Data User</span>
+                    </a>
+                </li>
+            <?php endif; ?>
 
             <li class="nav-item">
                 <a class="nav-link" href="<?= Url::to(['profile/index']) ?>">
@@ -161,7 +167,10 @@ AppAsset::register($this);
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Tigor - Universitas Persada Indonesia YAI</span>
+                        <span>Tigor Peryanto Hamonangan Nainggolan &copy; 204419005</span>
+                    </div>
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; Universitas Persada Indonesia YAI</span>
                     </div>
                 </div>
             </footer>

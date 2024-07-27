@@ -21,9 +21,11 @@ $this->params['breadcrumbs'][] = $this->title;
         } ?>
     <?php endforeach; ?>
 
-    <p>
-        <?= Html::a('<i class="fa fa-plus"></i> Tambah Data', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+    <?php if (Yii::$app->user->identity->id_user_level == 1): ?>
+        <p>
+            <?= Html::a('<i class="fa fa-plus"></i> Tambah Data', ['create'], ['class' => 'btn btn-success']) ?>
+        </p>
+    <?php endif; ?>
 
     <div class="card shadow mb-4">
         <div class="card-header py-3">
@@ -45,7 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         ],
                         [
                             'class' => 'yii\grid\ActionColumn',
-                            'template' => '{view} {update} {delete}',
+                            'template' => '{view} {update}',
                             'buttons' => [
                                 'view' => function ($url, $model) {
                                     return Html::a('<i class="fa fa-eye"></i>', $url, [
@@ -60,14 +62,17 @@ $this->params['breadcrumbs'][] = $this->title;
                                     ]);
                                 },
                                 'delete' => function ($url, $model) {
-                                    return Html::a('<i class="fa fa-trash"></i>', $url, [
-                                        'title' => Yii::t('app', 'delete'),
-                                        'class' => 'btn btn-danger btn-sm',
-                                        'data' => [
-                                            'confirm' => 'Apakah anda yakin untuk menghapus data ini?',
-                                            'method' => 'post',
-                                        ],
-                                    ]);
+                                    if (Yii::$app->user->identity->id_user_level == 1) {
+                                        return Html::a('<i class="fa fa-trash"></i>', $url, [
+                                            'title' => Yii::t('app', 'delete'),
+                                            'class' => 'btn btn-danger btn-sm',
+                                            'data' => [
+                                                'confirm' => 'Apakah anda yakin untuk menghapus data ini?',
+                                                'method' => 'post',
+                                            ],
+                                        ]);
+                                    }
+                                    return '';
                                 },
                             ],
                         ],
