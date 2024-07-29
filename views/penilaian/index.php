@@ -53,9 +53,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                         }
                                     } else {
                                         // Untuk Karyawan, hanya tampilkan nilai
-                                        echo Html::a('<i class="fa fa-eye"></i> Lihat', ['view', 'id' => $keys->id_alternatif], [
-                                            'class' => 'btn btn-info btn-sm',
-                                        ]);
+                                        // echo Html::a('<i class="fa fa-eye"></i> Lihat', ['view', 'id' => $keys->id_alternatif], [
+                                        //     'class' => 'btn btn-info btn-sm',
+                                        // ]);
                                     }
                                     ?>
                                 </td>
