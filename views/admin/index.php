@@ -6,6 +6,22 @@ $this->title = 'Dashboard';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
+<style>
+    .site-index {
+        background-image: url('<?= Url::to('@web/assets/img/dashboard.jpg') ?>');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        color: white; /* Mengatur teks menjadi putih agar terlihat di atas gambar */
+        min-height: 100vh; /* Membuat latar belakang penuh */
+        padding: 20px; /* Menambahkan padding agar konten tidak menempel pada tepi */
+    }
+    .card {
+        background-color: rgba(255, 255, 255, 0.9); /* Memberikan latar belakang putih transparan pada kartu */
+        color: black; /* Mengatur warna teks pada kartu */
+    }
+</style>
+
 <?php if (Yii::$app->user->identity->id_user_level == 1): ?>
 
 <div class="site-index">
