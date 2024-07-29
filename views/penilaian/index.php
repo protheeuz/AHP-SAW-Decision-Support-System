@@ -51,6 +51,11 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 'class' => 'btn btn-warning btn-sm modalButton',
                                             ]);
                                         }
+                                    } else {
+                                        // Untuk Karyawan, hanya tampilkan nilai
+                                        echo Html::a('<i class="fa fa-eye"></i> Lihat', ['view', 'id' => $keys->id_alternatif], [
+                                            'class' => 'btn btn-info btn-sm',
+                                        ]);
                                     }
                                     ?>
                                 </td>

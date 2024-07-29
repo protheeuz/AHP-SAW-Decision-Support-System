@@ -1,5 +1,4 @@
 <?php
-
 namespace app\models;
 
 use Yii;
@@ -42,13 +41,11 @@ class Penilaian extends ActiveRecord
         ];
     }
 
-    // Menambahkan relasi ke model Alternatif
     public function getAlternatif()
     {
         return $this->hasOne(Alternatif::class, ['id_alternatif' => 'id_alternatif']);
     }
 
-    // Menambahkan relasi ke model Kriteria
     public function getKriteria()
     {
         return $this->hasOne(Kriteria::class, ['id_kriteria' => 'id_kriteria']);

@@ -42,24 +42,24 @@ class KriteriaController extends Controller
     public function actionUpdate($id_kriteria)
     {
         $model = $this->findModel($id_kriteria);
-    
+
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             Yii::$app->session->setFlash('success', 'Data berhasil diperbarui.');
             return $this->redirect(['index']);
         }
-    
+
         return $this->render('update', [
             'model' => $model,
         ]);
     }
-    
+
     public function actionView($id_kriteria)
     {
         return $this->render('view', [
             'model' => $this->findModel($id_kriteria),
         ]);
     }
-    
+
 
     public function actionDelete($id_kriteria)
     {

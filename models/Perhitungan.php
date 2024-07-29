@@ -91,7 +91,7 @@ class Perhitungan extends ActiveRecord
     public function rules()
     {
         return [
-            [['id_alternatif', 'id_kriteria', 'nilai'], 'required'],
+            [['id_alternatif', 'id_kriteria', 'nilai', 'nama'], 'required'],
         ];
     }
 }

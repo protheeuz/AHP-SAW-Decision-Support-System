@@ -23,14 +23,18 @@ $this->params['breadcrumbs'][] = $this->title;
                     ['class' => 'yii\grid\SerialColumn'],
                     [
                         'attribute' => 'id_alternatif',
+                        'label' => 'Nama Karyawan',
                         'value' => function ($model) {
-                            return $model->alternatif->nama; // Menggunakan relasi untuk menampilkan nama alternatif
+                            Yii::info('Data Alternatif: ' . json_encode($model->alternatif), __METHOD__);
+                            return $model->alternatif ? $model->alternatif->nama : 'N/A'; // Menggunakan relasi untuk menampilkan nama alternatif
                         },
                     ],
                     [
                         'attribute' => 'id_kriteria',
+                        'label' => 'Kriteria',
                         'value' => function ($model) {
-                            return $model->kriteria->keterangan; // Menggunakan relasi untuk menampilkan keterangan kriteria
+                            Yii::info('Data Kriteria: ' . json_encode($model->kriteria), __METHOD__);
+                            return $model->kriteria ? $model->kriteria->keterangan : 'N/A'; // Menggunakan relasi untuk menampilkan keterangan kriteria
                         },
                     ],
                     'nilai',
