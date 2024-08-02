@@ -1,4 +1,5 @@
 <?php
+
 namespace app\controllers;
 
 use Yii;
@@ -15,7 +16,7 @@ class PerhitunganController extends Controller
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => Penilaian::find(),
+            'query' => Penilaian::find()->with(['alternatif', 'kriteria']),
             'pagination' => [
                 'pageSize' => 10,
             ],
@@ -33,11 +34,37 @@ class PerhitunganController extends Controller
         $penilaian = Penilaian::find()->all();
 
         $scores = $this->calculateScores($alternatif, $kriteria, $penilaian);
+        $kriteriaScores = $this->getKriteriaScores($alternatif, $kriteria, $penilaian);
 
         return $this->render('hasil', [
             'scores' => $scores,
+            'kriteriaScores' => $kriteriaScores,
         ]);
     }
+
+    private function getKriteriaScores($alternatif, $kriteria, $penilaian)
+    {
+        $kriteriaScores = [];
+        foreach ($kriteria as $krit) {
+            $scores = [];
+            foreach ($alternatif as $alt) {
+                foreach ($penilaian as $pen) {
+                    if ($pen->id_alternatif == $alt->id_alternatif && $pen->id_kriteria == $krit->id_kriteria) {
+                        $scores[] = [
+                            'nama' => $alt->nama,
+                            'nilai' => $pen->nilai,
+                        ];
+                    }
+                }
+            }
+            usort($scores, function ($a, $b) {
+                return $b['nilai'] <=> $a['nilai'];
+            });
+            $kriteriaScores[$krit->keterangan] = $scores;
+        }
+        return $kriteriaScores;
+    }
+
 
     private function calculateScores($alternatif, $kriteria, $penilaian)
     {

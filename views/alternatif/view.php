@@ -26,6 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id_alternatif',
             'nama',
+            'divisi',
         ],
     ]) ?>
 

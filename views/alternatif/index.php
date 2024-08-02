@@ -22,9 +22,8 @@ $this->params['breadcrumbs'][] = $this->title;
         'layout' => "{items}\n{summary}\n{pager}",
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
             'nama',
-
+            'divisi',
             [
                 'class' => 'yii\grid\ActionColumn',
                 'template' => '{view} {update} {delete}',

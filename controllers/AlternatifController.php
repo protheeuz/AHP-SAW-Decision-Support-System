@@ -50,6 +50,7 @@ class AlternatifController extends Controller
             'model' => $model,
         ]);
     }
+
     public function actionView($id)
     {
         return $this->render('view', [
@@ -65,7 +66,6 @@ class AlternatifController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
-
 
     public function actionDelete($id)
     {

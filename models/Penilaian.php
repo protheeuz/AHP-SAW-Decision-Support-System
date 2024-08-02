@@ -14,21 +14,11 @@ class Penilaian extends ActiveRecord
     public function rules()
     {
         return [
-            [['id_alternatif', 'id_kriteria', 'nilai'], 'required'],
-            [['id_alternatif', 'id_kriteria', 'nilai'], 'integer'],
+            [['id_alternatif', 'id_kriteria', 'nilai', 'tahun'], 'required'],
+            [['id_alternatif', 'id_kriteria', 'nilai', 'tahun'], 'integer'],
             [['id_kriteria'], 'exist', 'skipOnError' => true, 'targetClass' => Kriteria::class, 'targetAttribute' => ['id_kriteria' => 'id_kriteria']],
             [['id_alternatif'], 'exist', 'skipOnError' => true, 'targetClass' => Alternatif::class, 'targetAttribute' => ['id_alternatif' => 'id_alternatif']],
         ];
-    }
-
-    public function beforeSave($insert)
-    {
-        if (!parent::beforeSave($insert)) {
-            return false;
-        }
-
-        Yii::info('Before Saving Penilaian: ' . json_encode($this->attributes), __METHOD__);
-        return true;
     }
 
     public function attributeLabels()
@@ -38,14 +28,17 @@ class Penilaian extends ActiveRecord
             'id_alternatif' => 'Nama Karyawan',
             'id_kriteria' => 'Kriteria',
             'nilai' => 'Nilai',
+            'tahun' => 'Tahun',
         ];
     }
 
+    // Menambahkan relasi ke model Alternatif
     public function getAlternatif()
     {
         return $this->hasOne(Alternatif::class, ['id_alternatif' => 'id_alternatif']);
     }
 
+    // Menambahkan relasi ke model Kriteria
     public function getKriteria()
     {
         return $this->hasOne(Kriteria::class, ['id_kriteria' => 'id_kriteria']);

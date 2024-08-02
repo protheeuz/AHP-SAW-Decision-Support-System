@@ -7,6 +7,10 @@ use app\models\Penilaian;
 
 $this->title = 'Data Penilaian';
 $this->params['breadcrumbs'][] = $this->title;
+
+$years = range(date('Y'), 2022); // Menyediakan pilihan tahun dari 2020 hingga sekarang
+$currentYear = $tahun;
+
 ?>
 
 <div class="penilaian-index">
@@ -14,6 +18,13 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <?= Yii::$app->session->getFlash('success'); ?>
+
+    <div class="form-group">
+        <?= Html::dropDownList('tahun', $currentYear, array_combine($years, $years), [
+            'class' => 'form-control',
+            'onchange' => 'window.location.href = "' . Url::to(['penilaian/index']) . '?tahun=" + $(this).val();',
+        ]) ?>
+    </div>
 
     <div class="card shadow mb-4">
         <div class="card-header py-3">
@@ -38,24 +49,19 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <td align="left"><?= $keys->nama ?></td>
                                 <td>
                                     <?php
-                                    $cek_tombol = Penilaian::find()->where(['id_alternatif' => $keys->id_alternatif])->count();
+                                    $cek_tombol = Penilaian::find()->where(['id_alternatif' => $keys->id_alternatif, 'tahun' => $currentYear])->count();
                                     if (Yii::$app->user->identity->id_user_level != 3) { // Hanya tampilkan tombol untuk selain Karyawan
                                         if ($cek_tombol == 0) {
                                             echo Html::button('<i class="fa fa-plus"></i> Input', [
-                                                'value' => Url::to(['penilaian/create', 'id' => $keys->id_alternatif]),
+                                                'value' => Url::to(['penilaian/create', 'id' => $keys->id_alternatif, 'tahun' => $currentYear]),
                                                 'class' => 'btn btn-success btn-sm modalButton',
                                             ]);
                                         } else {
                                             echo Html::button('<i class="fa fa-edit"></i> Edit', [
-                                                'value' => Url::to(['penilaian/update', 'id' => $keys->id_alternatif]),
+                                                'value' => Url::to(['penilaian/update', 'id' => $keys->id_alternatif, 'tahun' => $currentYear]),
                                                 'class' => 'btn btn-warning btn-sm modalButton',
                                             ]);
                                         }
-                                    } else {
-                                        // Untuk Karyawan, hanya tampilkan nilai
-                                        // echo Html::a('<i class="fa fa-eye"></i> Lihat', ['view', 'id' => $keys->id_alternatif], [
-                                        //     'class' => 'btn btn-info btn-sm',
-                                        // ]);
                                     }
                                     ?>
                                 </td>

@@ -1,5 +1,4 @@
 <?php
-
 namespace app\models;
 
 use yii\db\ActiveRecord;
@@ -14,16 +13,17 @@ class Alternatif extends ActiveRecord
     public function rules()
     {
         return [
-            [['nama'], 'required'],
-            [['nama'], 'string', 'max' => 255],
+            [['nama', 'divisi'], 'required'],
+            [['nama', 'divisi'], 'string', 'max' => 255],
         ];
     }
 
     public function attributeLabels()
     {
         return [
-            'id_alternatif' => 'ID Alternatif', // Sesuaikan label dengan nama kolom yang benar
+            'id_alternatif' => 'ID Alternatif',
             'nama' => 'Nama Karyawan',
+            'divisi' => 'Divisi',
         ];
     }
 }

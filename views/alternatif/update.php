@@ -17,6 +17,7 @@ $this->params['breadcrumbs'][] = 'Edit';
         <?php $form = ActiveForm::begin(); ?>
 
         <?= $form->field($model, 'nama')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'divisi')->textInput(['maxlength' => true]) ?>
 
         <div class="form-group">
             <?= Html::submitButton('Simpan', ['class' => 'btn btn-success']) ?>
