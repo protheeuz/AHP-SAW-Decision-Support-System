@@ -35,11 +35,39 @@ class PerhitunganController extends Controller
 
         $scores = $this->calculateScores($alternatif, $kriteria, $penilaian);
         $kriteriaScores = $this->getKriteriaScores($alternatif, $kriteria, $penilaian);
+        $yearlyScores = $this->getYearlyScores($alternatif, $penilaian);
+
+        // Tambahkan debug output untuk memastikan data yang dikirim benar
+        Yii::debug($scores, 'scores');
+        Yii::debug($kriteriaScores, 'kriteriaScores');
+        Yii::debug($yearlyScores, 'yearlyScores');
 
         return $this->render('hasil', [
             'scores' => $scores,
             'kriteriaScores' => $kriteriaScores,
+            'yearlyScores' => $yearlyScores,
         ]);
+    }
+
+    private function getYearlyScores($alternatif, $penilaian)
+    {
+        $yearlyScores = [];
+        foreach ($alternatif as $alt) {
+            $scores = [];
+            foreach ($penilaian as $pen) {
+                if ($pen->id_alternatif == $alt->id_alternatif) {
+                    $year = $pen->tahun;
+                    if (!isset($scores[$year])) {
+                        $scores[$year] = 0;
+                    }
+                    $scores[$year] += $pen->nilai;
+                }
+            }
+            foreach ($scores as $year => $totalScore) {
+                $yearlyScores[$alt->nama][$year] = $totalScore;
+            }
+        }
+        return $yearlyScores;
     }
 
     private function getKriteriaScores($alternatif, $kriteria, $penilaian)
@@ -50,21 +78,26 @@ class PerhitunganController extends Controller
             foreach ($alternatif as $alt) {
                 foreach ($penilaian as $pen) {
                     if ($pen->id_alternatif == $alt->id_alternatif && $pen->id_kriteria == $krit->id_kriteria) {
-                        $scores[] = [
+                        $year = $pen->tahun;
+                        if (!isset($scores[$year])) {
+                            $scores[$year] = [];
+                        }
+                        $scores[$year][] = [
                             'nama' => $alt->nama,
                             'nilai' => $pen->nilai,
                         ];
                     }
                 }
             }
-            usort($scores, function ($a, $b) {
-                return $b['nilai'] <=> $a['nilai'];
-            });
+            foreach ($scores as $year => $yearScores) {
+                usort($yearScores, function ($a, $b) {
+                    return $b['nilai'] <=> $a['nilai'];
+                });
+            }
             $kriteriaScores[$krit->keterangan] = $scores;
         }
         return $kriteriaScores;
     }
-
 
     private function calculateScores($alternatif, $kriteria, $penilaian)
     {
