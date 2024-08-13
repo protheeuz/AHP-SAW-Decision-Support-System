@@ -31,7 +31,7 @@ class PenilaianController extends Controller
             $tahun = date('Y');
         }
 
-        if (Yii::$app->user->identity->id_user_level == 3) { // Jika user adalah Karyawan
+        if (Yii::$app->user->identity->id_user_level == 3) {
             Yii::$app->session->addFlash('error', 'Anda tidak memiliki akses untuk menambah penilaian.');
             return $this->redirect(['index']);
         }
@@ -68,7 +68,7 @@ class PenilaianController extends Controller
             $tahun = date('Y');
         }
 
-        if (Yii::$app->user->identity->id_user_level == 3) { // Jika user adalah Karyawan
+        if (Yii::$app->user->identity->id_user_level == 3) {
             Yii::$app->session->addFlash('error', 'Anda tidak memiliki akses untuk mengedit penilaian.');
             return $this->redirect(['index']);
         }

@@ -47,7 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php
 $script = <<< JS
 $(document).on('beforeSubmit', '#penilaian-form', function (e) {
-    e.preventDefault();
+    e.preventDefault(); // Mencegah submit default
     var form = $(this);
     $.ajax({
         url: form.attr('action'),
@@ -55,15 +55,17 @@ $(document).on('beforeSubmit', '#penilaian-form', function (e) {
         data: form.serialize(),
         success: function (response) {
             if (response.success) {
-                $('#modal').modal('hide');
-                $.pjax.reload({container: '#dataTable'});
-                alert(response.message);
+                $('#modal').modal('hide'); // Menutup modal
+                location.reload(); // Reload halaman setelah modal ditutup
             } else {
-                alert(response.message);
+                alert(response.message); // Tampilkan pesan error jika ada masalah
             }
+        },
+        error: function () {
+            alert('Terjadi kesalahan saat menyimpan data.'); // Tampilkan pesan error jika ada kesalahan pada pengiriman data
         }
     });
-    return false;
+    return false; // Mencegah submit default
 });
 JS;
 $this->registerJs($script);

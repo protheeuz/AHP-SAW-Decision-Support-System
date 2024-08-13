@@ -8,7 +8,7 @@ use app\models\Penilaian;
 $this->title = 'Data Penilaian';
 $this->params['breadcrumbs'][] = $this->title;
 
-$years = range(date('Y'), 2022); // Menyediakan pilihan tahun dari 2020 hingga sekarang
+$years = range(date('Y'), 2022); 
 $currentYear = $tahun;
 
 ?>
@@ -88,37 +88,35 @@ Modal::end();
 ?>
 
 <?php
-$script = <<< JS
-$(function () {
-    $('.modalButton').click(function () {
-        $('#modal').modal('show')
-            .find('#modalContent')
-            .load($(this).attr('value'));
-    });
-
-    $(document).on('beforeSubmit', '#penilaian-form', function (e) {
-        e.preventDefault();
-        var form = $(this);
-        $.ajax({
-            url: form.attr('action'),
-            type: 'POST',
-            data: form.serialize(),
-            success: function (response) {
-                console.log(response); // Tambahkan log ini untuk melihat respon dari server
-                if (response.success) {
-                    $('#modal').modal('hide');
-                    location.reload(); // Reload halaman untuk memperbarui data
-                } else {
-                    alert(response.message);
-                }
-            },
-            error: function () {
-                alert('Terjadi kesalahan saat menyimpan data.');
-            }
+$this->registerJs("
+    $(function () {
+        $('.modalButton').click(function () {
+            $('#modal').modal('show')
+                .find('#modalContent')
+                .load($(this).attr('value'));
         });
-        return false;
+
+        $(document).on('beforeSubmit', '#penilaian-form', function (e) {
+            e.preventDefault();
+            var form = $(this);
+            $.ajax({
+                url: form.attr('action'),
+                type: 'POST',
+                data: form.serialize(),
+                success: function (response) {
+                    if (response.success) {
+                        $('#modal').modal('hide');
+                        location.reload();
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert('Terjadi kesalahan saat menyimpan data.');
+                }
+            });
+            return false;
+        });
     });
-});
-JS;
-$this->registerJs($script);
+", \yii\web\View::POS_READY);
 ?>

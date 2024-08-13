@@ -16,7 +16,10 @@ class PerhitunganController extends Controller
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => Penilaian::find()->with(['alternatif', 'kriteria']),
+            'query' => Penilaian::find()
+                ->joinWith('alternatif')
+                ->where(['not', ['alternatif.id_alternatif' => null]])
+                ->with(['kriteria']),
             'pagination' => [
                 'pageSize' => 10,
             ],
@@ -35,39 +38,37 @@ class PerhitunganController extends Controller
 
         $scores = $this->calculateScores($alternatif, $kriteria, $penilaian);
         $kriteriaScores = $this->getKriteriaScores($alternatif, $kriteria, $penilaian);
-        $yearlyScores = $this->getYearlyScores($alternatif, $penilaian);
-
-        // Tambahkan debug output untuk memastikan data yang dikirim benar
-        Yii::debug($scores, 'scores');
-        Yii::debug($kriteriaScores, 'kriteriaScores');
-        Yii::debug($yearlyScores, 'yearlyScores');
+        $divisiScores = $this->getDivisiScores($alternatif, $kriteria, $penilaian);
 
         return $this->render('hasil', [
             'scores' => $scores,
             'kriteriaScores' => $kriteriaScores,
-            'yearlyScores' => $yearlyScores,
+            'divisiScores' => $divisiScores,
         ]);
     }
 
-    private function getYearlyScores($alternatif, $penilaian)
+    private function getDivisiScores($alternatif, $kriteria, $penilaian)
     {
-        $yearlyScores = [];
-        foreach ($alternatif as $alt) {
-            $scores = [];
-            foreach ($penilaian as $pen) {
-                if ($pen->id_alternatif == $alt->id_alternatif) {
-                    $year = $pen->tahun;
-                    if (!isset($scores[$year])) {
-                        $scores[$year] = 0;
+        $divisiScores = [];
+        foreach ($kriteria as $krit) {
+            $divisiData = [];
+            foreach ($alternatif as $alt) {
+                foreach ($penilaian as $pen) {
+                    if ($pen->id_alternatif == $alt->id_alternatif && $pen->id_kriteria == $krit->id_kriteria) {
+                        if (!isset($divisiData[$alt->divisi])) {
+                            $divisiData[$alt->divisi] = [];
+                        }
+                        $divisiData[$alt->divisi][] = $pen->nilai;
                     }
-                    $scores[$year] += $pen->nilai;
                 }
             }
-            foreach ($scores as $year => $totalScore) {
-                $yearlyScores[$alt->nama][$year] = $totalScore;
+
+            foreach ($divisiData as $divisi => $nilaiArray) {
+                $divisiScores[$krit->keterangan][$divisi] = array_sum($nilaiArray) / count($nilaiArray); // Menghitung rata-rata nilai per divisi
             }
         }
-        return $yearlyScores;
+
+        return $divisiScores;
     }
 
     private function getKriteriaScores($alternatif, $kriteria, $penilaian)
