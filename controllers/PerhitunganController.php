@@ -29,16 +29,50 @@ class PerhitunganController extends Controller
             'dataProvider' => $dataProvider,
         ]);
     }
+    private function getDivisiScores($alternatif, $kriteria, $penilaian)
+    {
+        $divisiScores = [];
 
+        foreach ($kriteria as $krit) {
+            foreach ($alternatif as $alt) {
+                foreach ($penilaian as $pen) {
+                    if ($pen->id_alternatif == $alt->id_alternatif && $pen->id_kriteria == $krit->id_kriteria) {
+                        $divisi = $alt->divisi; // Asumsikan ada atribut 'divisi' pada model Alternatif
+                        if (!isset($divisiScores[$krit->keterangan][$divisi])) {
+                            $divisiScores[$krit->keterangan][$divisi] = [];
+                        }
+                        $divisiScores[$krit->keterangan][$divisi][] = $pen->nilai;
+                    }
+                }
+            }
+        }
+
+        // Hitung rata-rata untuk setiap divisi pada setiap kriteria
+        foreach ($divisiScores as $kriteria => $divisiData) {
+            foreach ($divisiData as $divisi => $scores) {
+                $divisiScores[$kriteria][$divisi] = array_sum($scores) / count($scores);
+            }
+        }
+
+        return $divisiScores;
+    }
+
+    // Di PerhitunganController.php
     public function actionHasil()
     {
         $alternatif = Alternatif::find()->all();
         $kriteria = Kriteria::find()->all();
         $penilaian = Penilaian::find()->all();
+        
+        Yii::debug($alternatif, 'alternatif');
+        Yii::debug($kriteria, 'kriteria');
+        Yii::debug($penilaian, 'penilaian');
 
         $scores = $this->calculateScores($alternatif, $kriteria, $penilaian);
         $kriteriaScores = $this->getKriteriaScores($alternatif, $kriteria, $penilaian);
-        $divisiScores = $this->getDivisiScores($alternatif, $kriteria, $penilaian);
+        $divisiScores = $this->calculateDivisiScores($alternatif, $kriteria, $penilaian);
+
+        Yii::debug($divisiScores, 'divisiScores');
 
         return $this->render('hasil', [
             'scores' => $scores,
@@ -47,28 +81,49 @@ class PerhitunganController extends Controller
         ]);
     }
 
-    private function getDivisiScores($alternatif, $kriteria, $penilaian)
+    private function calculateDivisiScores($alternatif, $kriteria, $penilaian)
     {
         $divisiScores = [];
         foreach ($kriteria as $krit) {
-            $divisiData = [];
+            $scores = [];
             foreach ($alternatif as $alt) {
+                $totalScore = 0;
                 foreach ($penilaian as $pen) {
                     if ($pen->id_alternatif == $alt->id_alternatif && $pen->id_kriteria == $krit->id_kriteria) {
-                        if (!isset($divisiData[$alt->divisi])) {
-                            $divisiData[$alt->divisi] = [];
-                        }
-                        $divisiData[$alt->divisi][] = $pen->nilai;
+                        $totalScore += $pen->nilai;
                     }
                 }
+                if (!isset($scores[$alt->divisi])) {
+                    $scores[$alt->divisi] = 0;
+                }
+                $scores[$alt->divisi] += $totalScore;
             }
-
-            foreach ($divisiData as $divisi => $nilaiArray) {
-                $divisiScores[$krit->keterangan][$divisi] = array_sum($nilaiArray) / count($nilaiArray); // Menghitung rata-rata nilai per divisi
+            foreach ($scores as $divisi => $totalScore) {
+                $divisiScores[$krit->keterangan][$divisi] = $totalScore;
             }
         }
-
         return $divisiScores;
+    }
+
+    private function getYearlyScores($alternatif, $penilaian)
+    {
+        $yearlyScores = [];
+        foreach ($alternatif as $alt) {
+            $scores = [];
+            foreach ($penilaian as $pen) {
+                if ($pen->id_alternatif == $alt->id_alternatif) {
+                    $year = $pen->tahun;
+                    if (!isset($scores[$year])) {
+                        $scores[$year] = 0;
+                    }
+                    $scores[$year] += $pen->nilai;
+                }
+            }
+            foreach ($scores as $year => $totalScore) {
+                $yearlyScores[$alt->nama][$year] = $totalScore;
+            }
+        }
+        return $yearlyScores;
     }
 
     private function getKriteriaScores($alternatif, $kriteria, $penilaian)

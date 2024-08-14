@@ -88,35 +88,38 @@ Modal::end();
 ?>
 
 <?php
-$this->registerJs("
-    $(function () {
-        $('.modalButton').click(function () {
-            $('#modal').modal('show')
-                .find('#modalContent')
-                .load($(this).attr('value'));
-        });
-
-        $(document).on('beforeSubmit', '#penilaian-form', function (e) {
-            e.preventDefault();
-            var form = $(this);
-            $.ajax({
-                url: form.attr('action'),
-                type: 'POST',
-                data: form.serialize(),
-                success: function (response) {
-                    if (response.success) {
-                        $('#modal').modal('hide');
-                        location.reload();
-                    } else {
-                        alert(response.message);
-                    }
-                },
-                error: function () {
-                    alert('Terjadi kesalahan saat menyimpan data.');
-                }
-            });
-            return false;
-        });
+$script = <<< JS
+$(function () {
+    // Menggunakan delegasi event untuk menangani klik tombol yang dinamis
+    $(document).on('click', '.modalButton', function () {
+        $('#modal').modal('show')
+            .find('#modalContent')
+            .load($(this).attr('value'));
     });
-", \yii\web\View::POS_READY);
+
+    $(document).on('beforeSubmit', '#penilaian-form', function (e) {
+        e.preventDefault();
+        var form = $(this);
+        $.ajax({
+            url: form.attr('action'),
+            type: 'POST',
+            data: form.serialize(),
+            success: function (response) {
+                console.log(response); // Tambahkan log ini untuk melihat respon dari server
+                if (response.success) {
+                    $('#modal').modal('hide');
+                    location.reload(); // Reload halaman untuk memperbarui data
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function () {
+                alert('Terjadi kesalahan saat menyimpan data.');
+            }
+        });
+        return false;
+    });
+});
+JS;
+$this->registerJs($script);
 ?>
