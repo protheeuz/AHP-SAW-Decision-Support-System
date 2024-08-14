@@ -67,6 +67,18 @@ AppAsset::register($this);
                         <span>Data Karyawan</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="<?= Url::to(['penilaian/index']) ?>">
+                        <i class="fas fa-fw fa-users"></i>
+                        <span>Data Penilaian</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="<?= Url::to(['perhitungan/index']) ?>">
+                        <i class="fas fa-fw fa-users"></i>
+                        <span>Data Perhitungan</span>
+                    </a>
+                </li>
             <?php endif; ?>
 
             <?php if (Yii::$app->user->identity->id_user_level == 1 || Yii::$app->user->identity->id_user_level == 3): // Admin atau Karyawan ?>
