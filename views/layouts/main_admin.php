@@ -67,12 +67,12 @@ AppAsset::register($this);
                         <span>Data Karyawan</span>
                     </a>
                 </li>
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a class="nav-link" href="<?= Url::to(['penilaian/index']) ?>">
                         <i class="fas fa-fw fa-users"></i>
                         <span>Data Penilaian</span>
                     </a>
-                </li>
+                </li> -->
                 <li class="nav-item">
                     <a class="nav-link" href="<?= Url::to(['perhitungan/index']) ?>">
                         <i class="fas fa-fw fa-users"></i>
