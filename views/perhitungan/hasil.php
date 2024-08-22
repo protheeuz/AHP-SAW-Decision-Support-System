@@ -22,15 +22,26 @@ $this->params['breadcrumbs'][] = $this->title;
                             <th>Ranking</th>
                             <th>Nama Karyawan</th>
                             <th>Total Skor</th>
+                            <th>Keterangan</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php $rank = 1;
-                        foreach ($scores as $score) : ?>
+                        foreach ($scores as $score) : 
+                            $keterangan = '';
+                            if ($score['total_score'] > 25) {
+                                $keterangan = 'Baik';
+                            } elseif ($score['total_score'] > 15) {
+                                $keterangan = 'Cukup Baik';
+                            } else {
+                                $keterangan = 'Kurang Baik';
+                            }
+                        ?>
                             <tr align="center">
                                 <td><?= $rank ?></td>
                                 <td align="left"><?= $score['nama'] ?></td>
                                 <td><?= $score['total_score'] ?></td>
+                                <td><?= $keterangan ?></td>
                             </tr>
                         <?php $rank++;
                         endforeach; ?>
@@ -96,7 +107,7 @@ $borderColorsKriteria = json_encode([
 
 // Warna untuk grafik per divisi dengan transparansi lebih tinggi
 $colorsDivisi = json_encode([
-    'rgba(54, 162, 235, 0.2)', // Warna lebih transparan
+    'rgba(54, 162, 235, 0.2)', 
     'rgba(255, 99, 132, 0.2)', 
     'rgba(255, 206, 86, 0.2)', 
     'rgba(75, 192, 192, 0.2)', 
@@ -105,7 +116,7 @@ $colorsDivisi = json_encode([
 ]);
 
 $borderColorsDivisi = json_encode([
-    'rgba(54, 162, 235, 1)', // Tetap menggunakan garis tebal
+    'rgba(54, 162, 235, 1)', 
     'rgba(255, 99, 132, 1)', 
     'rgba(255, 206, 86, 1)', 
     'rgba(75, 192, 192, 1)', 
@@ -121,13 +132,38 @@ var borderColorsKriteria = $borderColorsKriteria;
 var colorsDivisi = $colorsDivisi;
 var borderColorsDivisi = $borderColorsDivisi;
 
+// Mendapatkan semua tahun yang tersedia
+var allYears = [];
+for (var kriteria in divisiData) {
+    for (var divisi in divisiData[kriteria]) {
+        var years = Object.keys(divisiData[kriteria][divisi]);
+        years.forEach(function(year) {
+            if (allYears.indexOf(year) === -1) {
+                allYears.push(year);
+            }
+        });
+    }
+}
+
+// Mengurutkan tahun agar tampil sesuai urutan
+allYears.sort(function(a, b) {
+    return a - b;
+});
+
 // Grafik per kriteria
 for (var kriteria in kriteriaData) {
     var ctx = document.getElementById('chart_' + kriteria.replace(/ /g, '_')).getContext('2d');
-    var datasets = Object.keys(kriteriaData[kriteria]).map(function(year, index) {
+
+    // Buat dataset untuk setiap alternatif dengan nilai untuk semua tahun
+    var datasets = Object.keys(kriteriaData[kriteria][Object.keys(kriteriaData[kriteria])[0]]).map(function(alternative, index) {
+        var scores = allYears.map(function(year) {
+            var entry = kriteriaData[kriteria][year].find(item => item.nama === alternative);
+            return entry ? entry.nilai : 0;
+        });
+
         return {
-            label: year,
-            data: kriteriaData[kriteria][year].map(function(item) { return item.nilai; }),
+            label: alternative,
+            data: scores,
             backgroundColor: colorsKriteria[index % colorsKriteria.length],
             borderColor: borderColorsKriteria[index % borderColorsKriteria.length],
             borderWidth: 3
@@ -137,48 +173,64 @@ for (var kriteria in kriteriaData) {
     var chart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: kriteriaData[kriteria][Object.keys(kriteriaData[kriteria])[0]].map(function(item) { return item.nama; }),
+            labels: allYears, // Menggunakan semua tahun sebagai label x-axis
             datasets: datasets
         },
         options: {
             scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Tahun'
+                    }
+                },
                 y: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Nilai'
+                    }
                 }
             }
         }
     });
 }
 
-// Grafik per divisi dengan area chart
+/// Grafik per divisi dengan area chart
 for (var kriteria in divisiData) {
     var ctx = document.getElementById('divisi_chart_' + kriteria.replace(/ /g, '_')).getContext('2d');
-    
-    var labels = Object.keys(divisiData[kriteria]);
-    var datasets = Object.keys(divisiData[kriteria]).map(function(divisi, index) {
-        return {
+
+    var datasets = [];
+
+    var divisiNames = Object.keys(divisiData[kriteria]);
+
+    divisiNames.forEach(function(divisi, index) {
+        var scores = allYears.map(function(year) {
+            return divisiData[kriteria][divisi][year] || 0;
+        });
+
+        datasets.push({
             label: divisi,
-            data: labels.map(function(label) { return divisiData[kriteria][divisi]; }),
-            backgroundColor: colorsDivisi[index % colorsDivisi.length],  // Warna background lebih transparan
-            borderColor: borderColorsDivisi[index % borderColorsDivisi.length], // Warna border tetap tebal
+            data: scores,
+            backgroundColor: colorsDivisi[index % colorsDivisi.length],
+            borderColor: borderColorsDivisi[index % borderColorsDivisi.length],
             borderWidth: 3,
-            fill: true // Mengisi area di bawah garis untuk area chart
-        };
+            fill: true
+        });
     });
 
     var chart = new Chart(ctx, {
-        type: 'line', 
+        type: 'line',
         data: {
-            labels: labels,
+            labels: allYears, // Menggunakan tahun sebagai label x-axis
             datasets: datasets
         },
         options: {
             scales: {
                 x: {
-                    beginAtZero: true,
                     title: {
                         display: true,
-                        text: 'Divisi'
+                        text: 'Tahun'
                     }
                 },
                 y: {

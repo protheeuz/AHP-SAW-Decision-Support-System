@@ -63,7 +63,7 @@ class PerhitunganController extends Controller
         $alternatif = Alternatif::find()->all();
         $kriteria = Kriteria::find()->all();
         $penilaian = Penilaian::find()->all();
-        
+
         Yii::debug($alternatif, 'alternatif');
         Yii::debug($kriteria, 'kriteria');
         Yii::debug($penilaian, 'penilaian');
@@ -84,24 +84,33 @@ class PerhitunganController extends Controller
     private function calculateDivisiScores($alternatif, $kriteria, $penilaian)
     {
         $divisiScores = [];
+
         foreach ($kriteria as $krit) {
-            $scores = [];
             foreach ($alternatif as $alt) {
-                $totalScore = 0;
                 foreach ($penilaian as $pen) {
                     if ($pen->id_alternatif == $alt->id_alternatif && $pen->id_kriteria == $krit->id_kriteria) {
-                        $totalScore += $pen->nilai;
+                        $divisi = $alt->divisi;
+                        $year = $pen->tahun;
+
+                        if (!isset($divisiScores[$krit->keterangan][$divisi][$year])) {
+                            $divisiScores[$krit->keterangan][$divisi][$year] = 0;
+                        }
+
+                        $divisiScores[$krit->keterangan][$divisi][$year] += $pen->nilai;
                     }
                 }
-                if (!isset($scores[$alt->divisi])) {
-                    $scores[$alt->divisi] = 0;
-                }
-                $scores[$alt->divisi] += $totalScore;
-            }
-            foreach ($scores as $divisi => $totalScore) {
-                $divisiScores[$krit->keterangan][$divisi] = $totalScore;
             }
         }
+
+        // Rata-rata nilai per tahun per divisi
+        foreach ($divisiScores as $kriteria => $divisiData) {
+            foreach ($divisiData as $divisi => $yearData) {
+                foreach ($yearData as $year => $totalScore) {
+                    $divisiScores[$kriteria][$divisi][$year] = $totalScore;
+                }
+            }
+        }
+
         return $divisiScores;
     }
 
