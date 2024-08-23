@@ -132,38 +132,13 @@ var borderColorsKriteria = $borderColorsKriteria;
 var colorsDivisi = $colorsDivisi;
 var borderColorsDivisi = $borderColorsDivisi;
 
-// Mendapatkan semua tahun yang tersedia
-var allYears = [];
-for (var kriteria in divisiData) {
-    for (var divisi in divisiData[kriteria]) {
-        var years = Object.keys(divisiData[kriteria][divisi]);
-        years.forEach(function(year) {
-            if (allYears.indexOf(year) === -1) {
-                allYears.push(year);
-            }
-        });
-    }
-}
-
-// Mengurutkan tahun agar tampil sesuai urutan
-allYears.sort(function(a, b) {
-    return a - b;
-});
-
 // Grafik per kriteria
 for (var kriteria in kriteriaData) {
     var ctx = document.getElementById('chart_' + kriteria.replace(/ /g, '_')).getContext('2d');
-
-    // Buat dataset untuk setiap alternatif dengan nilai untuk semua tahun
-    var datasets = Object.keys(kriteriaData[kriteria][Object.keys(kriteriaData[kriteria])[0]]).map(function(alternative, index) {
-        var scores = allYears.map(function(year) {
-            var entry = kriteriaData[kriteria][year].find(item => item.nama === alternative);
-            return entry ? entry.nilai : 0;
-        });
-
+    var datasets = Object.keys(kriteriaData[kriteria]).map(function(year, index) {
         return {
-            label: alternative,
-            data: scores,
+            label: year,
+            data: kriteriaData[kriteria][year].map(function(item) { return item.nilai; }),
             backgroundColor: colorsKriteria[index % colorsKriteria.length],
             borderColor: borderColorsKriteria[index % borderColorsKriteria.length],
             borderWidth: 3
@@ -173,23 +148,13 @@ for (var kriteria in kriteriaData) {
     var chart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: allYears, // Menggunakan semua tahun sebagai label x-axis
+            labels: kriteriaData[kriteria][Object.keys(kriteriaData[kriteria])[0]].map(function(item) { return item.nama; }),
             datasets: datasets
         },
         options: {
             scales: {
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Tahun'
-                    }
-                },
                 y: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Nilai'
-                    }
+                    beginAtZero: true
                 }
             }
         }
@@ -202,11 +167,21 @@ for (var kriteria in divisiData) {
 
     var datasets = [];
 
-    var divisiNames = Object.keys(divisiData[kriteria]);
+    // Dapatkan semua tahun dari data
+    var allYears = [];
+    for (var divisi in divisiData[kriteria]) {
+        for (var year in divisiData[kriteria][divisi]) {
+            if (allYears.indexOf(year) === -1) {
+                allYears.push(year);
+            }
+        }
+    }
+    allYears.sort();
 
-    divisiNames.forEach(function(divisi, index) {
+    // Buat datasets untuk setiap divisi
+    Object.keys(divisiData[kriteria]).forEach(function(divisi, index) {
         var scores = allYears.map(function(year) {
-            return divisiData[kriteria][divisi][year] || 0;
+            return divisiData[kriteria][divisi][year] || 0; // Isi dengan 0 jika tidak ada data untuk tahun tersebut
         });
 
         datasets.push({
@@ -228,6 +203,7 @@ for (var kriteria in divisiData) {
         options: {
             scales: {
                 x: {
+                    beginAtZero: true,
                     title: {
                         display: true,
                         text: 'Tahun'
