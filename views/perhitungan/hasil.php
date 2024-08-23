@@ -79,12 +79,25 @@ $this->params['breadcrumbs'][] = $this->title;
         <?php endforeach; ?>
     <?php endif; ?>
 
+    <!-- Grafik per alternatif -->
+    <?php if (!empty($alternatifScores)) : ?>
+        <div class="card shadow mb-4 mt-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary"><i class="fa fa-chart-line"></i> Grafik Nilai Total per-Altenatif Berdasarkan Tahun</h6>
+            </div>
+            <div class="card-body">
+                <canvas id="alternatif_chart"></canvas>
+            </div>
+        </div>
+    <?php endif; ?>
+
 </div>
 
 <?php
 // Mengambil data untuk grafik
 $kriteriaData = json_encode($kriteriaScores);
 $divisiData = json_encode($divisiScores);
+$alternatifData = json_encode($alternatifScores);
 
 // Warna untuk grafik per kriteria
 $colorsKriteria = json_encode([
@@ -124,13 +137,35 @@ $borderColorsDivisi = json_encode([
     'rgba(255, 159, 64, 1)'
 ]);
 
+// Warna untuk grafik per alternatif
+$colorsAlternatif = json_encode([
+    'rgba(75, 192, 192, 0.8)', 
+    'rgba(54, 162, 235, 0.8)', 
+    'rgba(255, 159, 64, 0.8)', 
+    'rgba(255, 206, 86, 0.8)', 
+    'rgba(153, 102, 255, 0.8)', 
+    'rgba(255, 99, 132, 0.8)'
+]);
+
+$borderColorsAlternatif = json_encode([
+    'rgba(75, 192, 192, 1)', 
+    'rgba(54, 162, 235, 1)', 
+    'rgba(255, 159, 64, 1)', 
+    'rgba(255, 206, 86, 1)', 
+    'rgba(153, 102, 255, 1)', 
+    'rgba(255, 99, 132, 1)'
+]);
+
 $scriptKriteria = <<<JS
 var kriteriaData = $kriteriaData;
 var divisiData = $divisiData;
+var alternatifData = $alternatifData;
 var colorsKriteria = $colorsKriteria;
 var borderColorsKriteria = $borderColorsKriteria;
 var colorsDivisi = $colorsDivisi;
 var borderColorsDivisi = $borderColorsDivisi;
+var colorsAlternatif = $colorsAlternatif;
+var borderColorsAlternatif = $borderColorsAlternatif;
 
 // Grafik per kriteria
 for (var kriteria in kriteriaData) {
@@ -226,6 +261,68 @@ for (var kriteria in divisiData) {
         }
     });
 }
+
+// Grafik per alternatif dengan line chart
+var ctx = document.getElementById('alternatif_chart').getContext('2d');
+var datasets = [];
+
+// Dapatkan semua tahun dari data
+var allYears = [];
+for (var alternatif in alternatifData) {
+    for (var year in alternatifData[alternatif]) {
+        if (allYears.indexOf(year) === -1) {
+            allYears.push(year);
+        }
+    }
+}
+allYears.sort();
+
+// Buat datasets untuk setiap alternatif
+Object.keys(alternatifData).forEach(function(alternatif, index) {
+    var scores = allYears.map(function(year) {
+        return alternatifData[alternatif][year] || 0; // Isi dengan 0 jika tidak ada data untuk tahun tersebut
+    });
+
+    datasets.push({
+        label: alternatif,
+        data: scores,
+        backgroundColor: colorsAlternatif[index % colorsAlternatif.length],
+        borderColor: borderColorsAlternatif[index % borderColorsAlternatif.length],
+        borderWidth: 3,
+        fill: false
+    });
+});
+
+var chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: allYears, // Menggunakan tahun sebagai label x-axis
+        datasets: datasets
+    },
+    options: {
+        scales: {
+            x: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Tahun'
+                }
+            },
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Nilai Total'
+                }
+            }
+        },
+        plugins: {
+            tooltip: {
+                mode: 'index',
+                intersect: false,
+            }
+        }
+    }
+});
 JS;
 $this->registerJs($scriptKriteria, \yii\web\View::POS_END);
-?>

@@ -71,15 +71,18 @@ class PerhitunganController extends Controller
         $scores = $this->calculateScores($alternatif, $kriteria, $penilaian);
         $kriteriaScores = $this->getKriteriaScores($alternatif, $kriteria, $penilaian);
         $divisiScores = $this->calculateDivisiScores($alternatif, $kriteria, $penilaian);
+        $alternatifScores = $this->getAlternatifScores($alternatif, $kriteria, $penilaian); // Tambahkan ini
 
-        Yii::debug($divisiScores, 'divisiScores');
+        Yii::debug($alternatifScores, 'alternatifScores');
 
         return $this->render('hasil', [
             'scores' => $scores,
             'kriteriaScores' => $kriteriaScores,
             'divisiScores' => $divisiScores,
+            'alternatifScores' => $alternatifScores, 
         ]);
     }
+
 
     private function calculateDivisiScores($alternatif, $kriteria, $penilaian)
     {
@@ -191,5 +194,21 @@ class PerhitunganController extends Controller
         });
 
         return $scores;
+    }
+    private function getAlternatifScores($alternatif, $kriteria, $penilaian)
+    {
+        $alternatifScores = [];
+        foreach ($alternatif as $alt) {
+            foreach ($penilaian as $pen) {
+                if ($pen->id_alternatif == $alt->id_alternatif) {
+                    $year = $pen->tahun;
+                    if (!isset($alternatifScores[$alt->nama][$year])) {
+                        $alternatifScores[$alt->nama][$year] = 0;
+                    }
+                    $alternatifScores[$alt->nama][$year] += $pen->nilai;
+                }
+            }
+        }
+        return $alternatifScores;
     }
 }
